@@ -55,29 +55,16 @@ static void skipToEOL(FILE* f)
         ;
 }
 
-
 Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 {
-    double cosX = cos(thetaX);
-    double sinX = sin(thetaX);
-    double cosY = cos(thetaY);
-    double sinY = sin(thetaY);
-    double cosZ = cos(thetaZ);
-    double sinZ = sin(thetaZ);
-    return
-        Mat3x3d(Vec3d( cosZ, -sinZ,     0),
-                Vec3d( sinZ,  cosZ,     0),
-                Vec3d(    0,     0,     1)) *
-        Mat3x3d(Vec3d( cosY,     0,  sinY),
-                Vec3d(    0,     1,     0),
-                Vec3d(-sinY,     0,  cosY)) *
-        Mat3x3d(Vec3d(    1,     0,     0),
-                Vec3d(    0,  cosX, -sinX),
-                Vec3d(    0,  sinX,  cosX)) ;
+    Quatd q=Quatd::fromEuler(thetaX, thetaY, thetaZ) ;
+    Mat3x3d m;
+    q.toMatrix(m);
+    return m;
 }
 
 
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 
 template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::constructor_message()
@@ -491,7 +478,7 @@ Vector6 UniformMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const MechanicalPar
 
 #endif
 
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::constructor_message()
 {
@@ -906,7 +893,7 @@ SOFA_DECL_CLASS(UniformMass)
 // Register in the Factory
 int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
 
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
         .add< UniformMass<Vec3dTypes,double> >()
         .add< UniformMass<Vec2dTypes,double> >()
         .add< UniformMass<Vec1dTypes,double> >()
@@ -914,7 +901,8 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
         .add< UniformMass<Rigid3dTypes,Rigid3dMass> >()
         .add< UniformMass<Rigid2dTypes,Rigid2dMass> >()
 #endif
-#ifndef SOFA_DOUBLE
+
+#ifdef SOFA_WITH_FLOAT
         .add< UniformMass<Vec3fTypes,float> >()
         .add< UniformMass<Vec2fTypes,float> >()
         .add< UniformMass<Vec1fTypes,float> >()
@@ -934,7 +922,7 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
 /// avoid the code generation of the template for each compilation unit.
 /// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_FLOAT
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec3dTypes,double>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec2dTypes,double>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec1dTypes,double>;
@@ -942,7 +930,8 @@ template class SOFA_BASE_MECHANICS_API UniformMass<Vec6dTypes,double>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Rigid3dTypes,Rigid3dMass>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2dTypes,Rigid2dMass>;
 #endif
-#ifndef SOFA_DOUBLE
+
+#ifdef SOFA_WITH_DOUBLE
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec3fTypes,float>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec2fTypes,float>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec1fTypes,float>;

@@ -55,6 +55,7 @@ static void skipToEOL(FILE* f)
         ;
 }
 
+
 Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 {
     double cosX = cos(thetaX);

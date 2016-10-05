@@ -27,8 +27,7 @@
 #include <string>
 using std::string ;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
+#include <gtest/gtest.h>
 using testing::Types;
 
 #include <sofa/helper/BackTrace.h>
@@ -75,8 +74,7 @@ struct TemplateTypes
 };
 
 template <typename TTemplateTypes>
-struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
-                                //
+struct UniformMassTest : public ::testing::Test
 {
     typedef UniformMass<typename TTemplateTypes::DataTypes,
                         typename TTemplateTypes::MassTypes> TheUniformMass ;
@@ -87,12 +85,12 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
     typedef typename TTemplateTypes::DataTypes DataTypes ;
     typedef typename TTemplateTypes::MassTypes MassTypes ;
 
-    Simulation* m_simu ; // {nullptr} ;
+    Simulation* m_simu {nullptr} ;
     Node::SPtr m_root ;
     Node::SPtr m_node ;
     typename TheUniformMass::SPtr m_mass ;
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
-    bool todo ; // {true} ;
+    bool todo {true} ;
 
     virtual void SetUp()
     {
@@ -270,8 +268,15 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
     }
 
     void loadFromAnInvalidFile(){
-        // TODO
-        EXPECT_TRUE(todo == false) ;
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0'/>                     "
+                "   <UniformMass filename='valid_uniformmatrix.txt'/>        "
+                "</Node>                                                     " ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
+                                                          scene.c_str(), (int)scene.size()) ;
+        root->init(ExecParams::defaultInstance()) ;
     }
 
     void loadFromAnInvalidPathname(){
@@ -286,7 +291,10 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
 
 };
 
-typedef Types< TemplateTypes<Vec3dTypes, double> > DataTypes;
+typedef Types< TemplateTypes<Vec3dTypes, double>
+
+
+             > DataTypes;
 
 TYPED_TEST_CASE(UniformMassTest, DataTypes);
 
@@ -328,7 +336,7 @@ TYPED_TEST(UniformMassTest, loadFromAnInvalidFile) {
 }
 
 TYPED_TEST(UniformMassTest, loadFromAnInvalidPathname) {
-    //ASSERT_NO_THROW(this->loadFromAnInvalidPathname()) ;
+    ASSERT_NO_THROW(this->loadFromAnInvalidPathname()) ;
 }
 
 TYPED_TEST(UniformMassTest, reinitTest) {

@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#if 0
 #include <SofaBaseMechanics/UniformMass.h>
 
 #include <string>
@@ -342,4 +343,6 @@ TYPED_TEST(UniformMassTest, loadFromAnInvalidPathname) {
 TYPED_TEST(UniformMassTest, reinitTest) {
     //ASSERT_NO_THROW(this->reinitTest()) ;
 }
+
+#endif
 

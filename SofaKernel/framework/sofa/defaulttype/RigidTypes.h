@@ -186,7 +186,7 @@ public:
     {
         return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
     }
-    
+
 
     Vec3& getVCenter() { return vCenter; }
     Vec3& getVOrientation() { return vOrientation; }
@@ -670,7 +670,7 @@ public:
         else
             return this->orientation[i-3];
     }
-    
+
     /// @name Tests operators
     /// @{
 
@@ -694,6 +694,10 @@ class RigidMass<3, real>
 public:
     typedef real value_type;
     typedef real Real;
+    enum { spatial_dimensions = 3 };
+    typedef Vec<3, Real> VecPos;
+    typedef Vec<3, Real> VecOri;
+    typedef Mat<3,3,Real> TheMat;
     typedef Mat<3,3,Real> Mat3x3;
     Real mass,volume;
     Mat3x3 inertiaMatrix;	      // Inertia matrix of the object
@@ -1201,10 +1205,10 @@ public:
             return this->vOrientation;
     }
 
-    
+
     /// @name Tests operators
     /// @{
-    
+
     bool operator==(const RigidDeriv<2,real>& b) const
     {
         return vCenter == b.vCenter && vOrientation == b.vOrientation;
@@ -1577,11 +1581,16 @@ class RigidMass<2, real>
 public:
     typedef real value_type;
     typedef real Real;
+
+    typedef Vec<2, Real> VecPos;
+    typedef Vec<1, Real> VecOri;
+
+    typedef Real TheMat;
     Real mass,volume;
-    Real inertiaMatrix;	      // Inertia matrix of the object
-    Real inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
-    Real invInertiaMatrix;	  // inverse of inertiaMatrix
-    Real invInertiaMassMatrix; // inverse of inertiaMassMatrix
+    TheMat inertiaMatrix;	      // Inertia matrix of the object
+    TheMat inertiaMassMatrix;     // Inertia matrix of the object * mass of the object
+    TheMat invInertiaMatrix;	  // inverse of inertiaMatrix
+    TheMat invInertiaMassMatrix;  // inverse of inertiaMassMatrix
     RigidMass(Real m=1)
     {
         mass = m;

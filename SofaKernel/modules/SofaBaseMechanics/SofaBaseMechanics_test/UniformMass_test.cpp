@@ -24,7 +24,6 @@
 ******************************************************************************/
 #if 0
 #include <SofaBaseMechanics/UniformMass.h>
-#if 0
 #include <string>
 using std::string ;
 
@@ -133,6 +132,61 @@ struct UniformMassTest : public ::testing::Test
         EXPECT_TRUE( m_mass->findData("totalMass") != nullptr ) ;
         return ;
     }
+
+    /// totalMass, mass and localRange..
+    /// totalMass & mass are exclusive.
+    /// si mass and total mass set c'est total mass le plus fort.
+    void checkCreationOfUniformMassRigid(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
+                "   <MechanicalObject position='0 0 0 4 5 6' template='Rigid3d'/>  "
+                "   <UniformMass template='Rigid3d' name='m_massd'/>          "
+                "</Node>                                                           " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadRigidWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        root->init(ExecParams::defaultInstance()) ;
+
+        sofa::core::objectmodel::BaseObject* massd = root->getObject("m_massd") ;
+        EXPECT_TRUE( massd != nullptr ) ;
+
+        massd->reinit() ;
+        if( massd!=nullptr ){
+            std::cout << "MASS 1: " << massd->getTemplateName() << std::endl ;
+
+        }
+    }
+
+    /// totalMass, mass and localRange..
+    /// totalMass & mass are exclusive.
+    /// si mass and total mass set c'est total mass le plus fort.
+    void checkCreationOfUniformMassVec3d(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
+                "   <MechanicalObject position='0 0 0 4 5 6' template='Vec3d'/>  "
+                "   <UniformMass template='Vec3d' name='m_massd'/>          "
+                "</Node>                                                           " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadRigidWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        root->init(ExecParams::defaultInstance()) ;
+
+        sofa::core::objectmodel::BaseObject* massd = root->getObject("m_massd") ;
+        EXPECT_TRUE( massd != nullptr ) ;
+
+        massd->reinit() ;
+        if( massd!=nullptr ){
+            std::cout << "MASS 1: " << massd->getTemplateName() << std::endl ;
+
+        }
+    }
+
 
     /// totalMass, mass and localRange..
     /// totalMass & mass are exclusive.
@@ -250,10 +304,7 @@ struct UniformMassTest : public ::testing::Test
         TheUniformMass* mass = root->getTreeObject<TheUniformMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
 
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMass(), 1.0 ) ;
-            EXPECT_EQ( mass->getTotalMass(), 2.0 ) ;
-        }
+        std::cout << "HELLOW WORLD" << mass->getClassName() << std::endl ;
     }
 
     void loadFromAFileForNonRigid(){
@@ -304,6 +355,10 @@ TYPED_TEST(UniformMassTest, attributesTests) {
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
+TYPED_TEST(UniformMassTest, checkCreationOfUniformMassRigid) {
+    ASSERT_NO_THROW(this->checkCreationOfUniformMassRigid()) ;
+}
+
 TYPED_TEST(UniformMassTest, checkMassTotalFromMass)
 {
     ASSERT_NO_THROW(this->checkMassTotalFromMass()) ;
@@ -344,6 +399,5 @@ TYPED_TEST(UniformMassTest, reinitTest) {
     //ASSERT_NO_THROW(this->reinitTest()) ;
 }
 
-#endif
 #endif //
 

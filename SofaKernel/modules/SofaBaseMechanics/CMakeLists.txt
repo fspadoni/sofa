@@ -17,6 +17,8 @@ set(HEADER_FILES
     SubsetMapping.inl
     UniformMass.h
     UniformMass.inl
+    UniformMassRigid.h
+    UniformMassVec.h
     config.h
     initBaseMechanics.h
 )
@@ -29,6 +31,8 @@ set(SOURCE_FILES
     MechanicalObject.cpp
     SubsetMapping.cpp
     UniformMass.cpp
+    UniformMassRigid.cpp
+    UniformMassVec.cpp
     initBaseMechanics.cpp
 )
 

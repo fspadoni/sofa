@@ -24,21 +24,27 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_CPP
 #include <SofaBaseMechanics/UniformMass.inl>
+using sofa::component::mass::UniformMass ;
+
 #include <sofa/defaulttype/VecTypes.h>
+using sofa::component::mass::Vec3d ;
+
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/Locale.h>
-#include <sstream>
 
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::DataRepository ;
+
+#include <sofa/helper/system/Locale.h>
+
+#include <sstream>
 using std::string ;
 using std::ostringstream ;
 
-using sofa::component::mass::Vec3d ;
-using sofa::helper::system::DataRepository ;
 
 using namespace sofa::defaulttype;
 
+#if 0
 namespace sofa
 {
 
@@ -48,20 +54,6 @@ namespace component
 namespace mass
 {
 
-static void skipToEOL(FILE* f)
-{
-    int	ch;
-    while ((ch = fgetc(f)) != EOF && ch != '\n')
-        ;
-}
-
-Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
-{
-    Quatd q=Quatd::fromEuler(thetaX, thetaY, thetaZ) ;
-    Mat3x3d m;
-    q.toMatrix(m);
-    return m;
-}
 
 
 #ifdef SOFA_WITH_DOUBLE
@@ -890,6 +882,7 @@ Vector6 UniformMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const MechanicalPar
 /// 3-.add<>(true) : Set default template
 SOFA_DECL_CLASS(UniformMass)
 
+/*
 // Register in the Factory
 int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
 
@@ -898,8 +891,8 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
         .add< UniformMass<Vec2dTypes,double> >()
         .add< UniformMass<Vec1dTypes,double> >()
         .add< UniformMass<Vec6dTypes,double> >()
-        .add< UniformMass<Rigid3dTypes,Rigid3dMass> >()
-        .add< UniformMass<Rigid2dTypes,Rigid2dMass> >()
+        //.add< UniformMass<Rigid3dTypes,Rigid3dMass> >()
+        //.add< UniformMass<Rigid2dTypes,Rigid2dMass> >()
 #endif
 
 #ifdef SOFA_WITH_FLOAT
@@ -908,9 +901,10 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
         .add< UniformMass<Vec1fTypes,float> >()
         .add< UniformMass<Vec6fTypes,float> >()
         .add< UniformMass<Rigid3fTypes,Rigid3fMass> >()
-        .add< UniformMass<Rigid2fTypes,Rigid2fMass> >()
+        //.add< UniformMass<Rigid2fTypes,Rigid2fMass> >()
 #endif
         ;
+        */
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -922,7 +916,7 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
 /// avoid the code generation of the template for each compilation unit.
 /// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 
-#ifdef SOFA_WITH_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec3dTypes,double>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec2dTypes,double>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec1dTypes,double>;
@@ -931,7 +925,7 @@ template class SOFA_BASE_MECHANICS_API UniformMass<Rigid3dTypes,Rigid3dMass>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2dTypes,Rigid2dMass>;
 #endif
 
-#ifdef SOFA_WITH_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec3fTypes,float>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec2fTypes,float>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec1fTypes,float>;
@@ -947,3 +941,43 @@ template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2fTypes,Rigid2fMass>;
 } // namespace component
 
 } // namespace sofa
+#endif
+
+////////////////////////////// TEMPLATE INITIALIZATION /////////////////////////////////////////////////
+/// Force template specialization for the most common sofa type.
+/// This goes with the extern template declaration in the .h. Declaring extern template
+/// avoid the code generation of the template for each compilation unit.
+/// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
+
+namespace sofa
+{
+namespace component
+{
+namespace mass
+{
+SOFA_DECL_CLASS(UniformMass)
+
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec3dTypes,double>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec2dTypes,double>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec1dTypes,double>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec6dTypes,double>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Rigid3dTypes,Rigid3dMass>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2dTypes,Rigid2dMass>;
+#endif
+
+#ifdef SOFA_WITH_FLOAT
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec3fTypes,float>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec2fTypes,float>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec1fTypes,float>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Vec6fTypes,float>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Rigid3fTypes,Rigid3fMass>;
+template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2fTypes,Rigid2fMass>;
+#endif
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+} // namespace mass
+
+} // namespace component
+
+} // namespace sofa
+

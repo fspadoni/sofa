@@ -90,9 +90,6 @@ UniformMass<DataTypes, MassType>::UniformMass()
                                "If unspecified the default value is totalmass = mass * number of particules."
                                 ) )
 
-    , d_filenameMass ( initData ( &d_filenameMass, "filename",
-                                  "rigid file to load the mass parameters" ) )
-
     , d_showCenterOfGravity ( initData ( &d_showCenterOfGravity, false, "showGravityCenter",
                                          "display the center of gravity of the system" ) )
 
@@ -164,10 +161,6 @@ void UniformMass<DataTypes, MassType>::reinit()
                              "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
                              " containing this <UniformMass/>";
         return;
-    }
-
-    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" ){
-        loadRigidMass(d_filenameMass.getFullPath()) ;
     }
 
     //If localRange is set, update indices
@@ -306,7 +299,7 @@ void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams*,
         a[indices[i]] = f[indices[i]] / m;
 }
 
-
+/*
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addMDxToVector ( BaseVector * resVect,
                                                         const VecDeriv* dx,
@@ -318,7 +311,7 @@ void UniformMass<DataTypes, MassType>::addMDxToVector ( BaseVector * resVect,
     SOFA_UNUSED(mFact);
     SOFA_UNUSED(offset);
 }
-
+*/
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addGravityToV(const MechanicalParams* mparams,
@@ -437,6 +430,7 @@ SReal UniformMass<DataTypes, MassType>::getKineticEnergy ( const MechanicalParam
     return e/2;
 }
 
+/*
 template <class DataTypes, class MassType>
 SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const MechanicalParams* params,
                                                              const DataVecCoord& d_x  ) const
@@ -459,7 +453,7 @@ SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const MechanicalPar
 
     return e;
 }
-
+*/
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
@@ -471,6 +465,11 @@ UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* pa
     SOFA_UNUSED(params);
     SOFA_UNUSED(d_x);
     SOFA_UNUSED(d_v);
+
+    msg_warning(this) << "Your are using an un-implemented function.                \n"
+                         "The results are probably not what you expect.             \n"
+                         "To remove this error the sofa source code should be       \n"
+                         "fixed ! Sends complains or patches to the SofaConsortium. \n";
     return defaulttype::Vector6();
 }
 
@@ -575,16 +574,6 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
 
         vparams->drawTool()->drawCross(temp, (float)axisSize, color);
     }
-}
-
-template<class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::loadRigidMass( std::string )
-{
-    msg_warning(this) << "The attribute filename is set to ["<< d_filenameMass.getFullPath() << "] while \n"
-                         " the current object is not based on a Rigid template. It is thus ignored.      \n"
-                         "To remove this warning you can: \n"
-                         "  - remove the filename attribute from <UniformMass filename='"<< d_filenameMass.getFullPath() << "'/>.\n"
-                         "  - use a Rigid mechanical object instead of a VecXX one. " ;
 }
 
 } // namespace mass

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #if 0
 #include <SofaBaseMechanics/UniformMass.h>
-
+#if 0
 #include <string>
 using std::string ;
 
@@ -345,4 +345,5 @@ TYPED_TEST(UniformMassTest, reinitTest) {
 }
 
 #endif
+#endif //
 

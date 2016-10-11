@@ -50,6 +50,15 @@
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
+
+#include <sofa/defaulttype/RigidTypes.h>
+using sofa::defaulttype::Rigid3dTypes ;
+using sofa::defaulttype::Rigid3dMass ;
+
+#include <SofaBaseMechanics/UniformMassRigid.h>
+using sofa::component::mass::UniformMassRigid ;
+typedef UniformMassRigid<Rigid3dTypes,Rigid3dMass> AnUniformMassRigid;
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -102,9 +111,9 @@ Node::SPtr createCard(Node::SPtr  parent, const Coord3& position, const Coord3& 
     dofRigid->setRotation(rotation[0],rotation[1],rotation[2]);
     card->addObject(dofRigid);
 
-    UniformMassRigid3::SPtr uniMassRigid = sofa::core::objectmodel::New<UniformMassRigid3>();
+    AnUniformMassRigid::SPtr uniMassRigid = sofa::core::objectmodel::New<AnUniformMassRigid>();
     uniMassRigid->setTotalMass(0.5);
-    uniMassRigid->setFileMass(inertiaMatrix);
+    uniMassRigid->setSrcFilename(inertiaMatrix);
     card->addObject(uniMassRigid);
 
     //Node VISUAL

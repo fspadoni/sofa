@@ -112,17 +112,17 @@ void UniformMassRigid<RigidType, RigidMass>::reinit()
 }
 
 template<class RigidMass>
-void dirtyHackToGetInertiaMatrix(RigidMass& m, Mat<3,3>& tmp){
+void dirtyHackToGetInertiaMatrix(RigidMass& m, Mat<3,3,double>& tmp){
     m.inertiaMatrix = tmp ;
 }
 
 template<>
-void dirtyHackToGetInertiaMatrix(Rigid2fMass& m, Mat<3,3>& tmp){
+void dirtyHackToGetInertiaMatrix(Rigid2fMass& m, Mat<3,3,double>& tmp){
     return m = tmp[0][0];
 }
 
 template<>
-void dirtyHackToGetInertiaMatrix(Rigid2dMass& m, Mat<3,3>& tmp){
+void dirtyHackToGetInertiaMatrix(Rigid2dMass& m, Mat<3,3,double>& tmp){
     return m = tmp[0][0];
 }
 
@@ -163,11 +163,14 @@ void UniformMassRigid<RigidType, RigidMass>::loadRigidMass(string filename)
                     {
                         if (!strcmp(cmd,"inrt"))
                         {
-                            Mat<3,3> tmp;
-                            for (int i = 0; i < 3; i++)
-                                for (int j = 0; j < 3; j++)
+                            Mat<3,3, double> tmp;
+                            for (int i = 0; i < 3; i++){
+                                for (int j = 0; j < 3; j++){
+
                                     if( fscanf(file, "%lf", &(tmp[i][j])) < 1 )
                                         serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                }
+                            }
                             dirtyHackToGetInertiaMatrix(m, tmp) ;
                         }
                         else if (!strcmp(cmd,"cntr") || !strcmp(cmd,"center") )
@@ -175,13 +178,15 @@ void UniformMassRigid<RigidType, RigidMass>::loadRigidMass(string filename)
                             Vec3d center;
                             for (int i = 0; i < 3; ++i)
                             {
-                                if( fscanf(file, "%lf", &(center[i])) < 1 )
+                                double tmp;
+                                if( fscanf(file, "%lf", &(tmp)) < 1 )
                                     serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                center[i] = tmp ;
                             }
                         }
                         else if (!strcmp(cmd,"mass"))
                         {
-                            double mass;
+                            double mass=0.0;
                             if( fscanf(file, "%lf", &mass) > 0 )
                             {
                                 if (!this->d_mass.isSet())
@@ -192,8 +197,10 @@ void UniformMassRigid<RigidType, RigidMass>::loadRigidMass(string filename)
                         }
                         else if (!strcmp(cmd,"volm"))
                         {
-                            if( fscanf(file, "%lf", &(m.volume)) < 1 )
+                            double tmp=0.0;
+                            if( fscanf(file, "%lf", &(tmp)) < 1 )
                                 serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                            m.volume=tmp;
                         }
                         else if (!strcmp(cmd,"frme"))
                         {
@@ -394,6 +401,18 @@ void UniformMassRigid<RigidType, RigidMass>::drawImpl(const VisualParams* vparam
     }
 }
 
+template <class RigidType, class RigidMass>
+SOFA_BASE_MECHANICS_API
+void  UniformMassRigid<RigidType, RigidMass>::setSrcFilename(const std::string& filename)
+{
+    d_filenameMass.setValue(filename) ;
+}
+
+template <class RigidType, class RigidMass>
+SOFA_BASE_MECHANICS_API
+const std::string& UniformMassRigid<RigidType, RigidMass>::getSrcFilename(){
+    return d_filenameMass.getValue() ;
+}
 
 //////////////////////////////////////////// REGISTERING TO FACTORY /////////////////////////////////////////
 /// Registering the component

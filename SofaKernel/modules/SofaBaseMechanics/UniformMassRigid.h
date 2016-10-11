@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MASS_UNIFORMMASSRIGID_H
 #include "config.h"
 
-//#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
@@ -69,6 +69,7 @@ using defaulttype::Vec3d;
 using defaulttype::DataTypeInfo;
 using defaulttype::BaseMatrix;
 using defaulttype::Vector6 ;
+
 
 template <class DataTypes, class TMassType>
 class UniformMassRigid  SOFA_BASE_MECHANICS_API : public UniformMass<DataTypes, TMassType>
@@ -137,6 +138,8 @@ public:
     void drawImpl(const VisualParams* vparams,
                   typename std::enable_if<P::spatial_dimensions != 3, int>::type) ;
 
+    void setSrcFilename(const std::string& filename) ;
+    const std::string& getSrcFilename() ;
 protected:
     UniformMassRigid() ;
     ~UniformMassRigid() ;

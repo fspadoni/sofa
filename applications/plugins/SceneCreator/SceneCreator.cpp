@@ -84,6 +84,13 @@
 
 #include <SofaBaseLinearSolver/FullVector.h>
 
+#include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetTopologyModifier.h>
+#include <SofaBaseTopology/QuadSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
+
+#include <SofaTopologyMapping/Hexa2QuadTopologicalMapping.h>
+
 namespace sofa
 {
 namespace modeling {
@@ -105,6 +112,12 @@ using sofa::component::topology::MeshTopology ;
 using sofa::component::topology::RegularGridTopology ;
 using sofa::component::topology::CylinderGridTopology ;
 using sofa::component::topology::SphereGridTopology;
+
+using sofa::component::topology::Hexa2QuadTopologicalMapping;
+using sofa::component::topology::QuadSetTopologyContainer;
+using sofa::component::topology::QuadSetTopologyModifier;
+using sofa::component::topology::QuadSetTopologyAlgorithms;
+using sofa::component::topology::QuadSetGeometryAlgorithms;
 
 
 /// Dense state vector deriving from BaseVector, used to access data in the scene graph
@@ -152,6 +165,8 @@ typedef BarycentricMapping<Vec3Types, ExtVec3fTypes>    BarycentricMapping3_to_E
 typedef RigidMapping<Rigid3Types, Vec3Types >           RigidMappingRigid3_to_3;
 typedef RigidMapping<Rigid3Types, ExtVec3fTypes >       RigidMappingRigid3_to_Ext3;
 
+typedef QuadSetTopologyAlgorithms<Vec3Types>            QuadSetTopologyAlgorithms3;
+typedef QuadSetGeometryAlgorithms<Vec3Types>            QuadSetGeometryAlgorithms3;
 
 #ifndef SOFA_NO_OPENGL
 typedef component::visualmodel::OglModel VisualModelType;
@@ -516,6 +531,28 @@ void addTriangleFEM(simulation::Node::SPtr currentNode, const std::string& objec
     currentNode->addObject(triFEMFF);
 }
 
+Node::SPtr addHexaToQuadMapping(simulation::Node::SPtr currentNode, const std::string& topoName)
+{
+	sofa::simulation::Node::SPtr quadNode = currentNode->createChild("QuadTopology_Node");
+
+	QuadSetTopologyContainer::SPtr container = sofa::core::objectmodel::New<QuadSetTopologyContainer>();
+	container->setName("QuadContainer");
+	quadNode->addObject(container);
+	QuadSetTopologyModifier::SPtr modifier = sofa::core::objectmodel::New<QuadSetTopologyModifier>();
+	quadNode->addObject(modifier);
+	QuadSetTopologyAlgorithms3::SPtr topoAlgo = sofa::core::objectmodel::New<QuadSetTopologyAlgorithms3>();
+	quadNode->addObject(topoAlgo);
+	QuadSetGeometryAlgorithms3::SPtr geoAlgo = sofa::core::objectmodel::New<QuadSetGeometryAlgorithms3>();
+	quadNode->addObject(geoAlgo);
+
+	Hexa2QuadTopologicalMapping::SPtr topoMapping = sofa::core::objectmodel::New<Hexa2QuadTopologicalMapping>();
+	topoMapping->setPathInputObject("@../" + topoName);
+	topoMapping->setPathOutputObject("@QuadContainer");
+	quadNode->addObject(topoMapping);
+
+	return quadNode;
+}
+
 
 simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string& objectName,
                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
@@ -565,16 +602,18 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
     grid->setPos(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f); // by default object is centered and volume equal to 1 unit, use dof modifier to change the scale/position/rotation
     cube->addObject(grid);
 
+	// Add Quad topoMapping
+	simulation::Node::SPtr quadNode = addHexaToQuadMapping(cube, objectName + "_grid");
 
-    // Add collisions models
+	// Add collisions models
     std::vector<std::string> colElements;
     colElements.push_back("Triangle");
     colElements.push_back("Line");
     colElements.push_back("Point");
-    sofa::modeling::addCollisionModels(cube, colElements);
+    sofa::modeling::addCollisionModels(quadNode, colElements);
 
     //Node VISUAL
-    createVisualNodeVec3(cube, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+    createVisualNodeVec3(quadNode, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
 
     return cube;
 }
@@ -639,16 +678,18 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
     grid->setAxis(axis[0], axis[1], axis[2]);
     cylinder->addObject(grid);
 
-
+	// Add Quad topoMapping
+	simulation::Node::SPtr quadNode = addHexaToQuadMapping(cylinder, objectName + "_grid");
+	
     // Add collisions models
     std::vector<std::string> colElements;
     colElements.push_back("Triangle");
     colElements.push_back("Line");
     colElements.push_back("Point");
-    sofa::modeling::addCollisionModels(cylinder, colElements);
+    sofa::modeling::addCollisionModels(quadNode, colElements);
 
     //Node VISUAL
-    createVisualNodeVec3(cylinder, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+    createVisualNodeVec3(quadNode, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
 
     return cylinder;
 }
@@ -710,16 +751,18 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
     grid->setAxis(axis[0], axis[1], axis[2]);
     sphere->addObject(grid);
 
+	// Add Quad topoMapping
+	simulation::Node::SPtr quadNode = addHexaToQuadMapping(sphere, objectName + "_grid");
 
     // Add collisions models
     std::vector<std::string> colElements;
     colElements.push_back("Triangle");
     colElements.push_back("Line");
     colElements.push_back("Point");
-    sofa::modeling::addCollisionModels(sphere, colElements);
+    sofa::modeling::addCollisionModels(quadNode, colElements);
 
     //Node VISUAL
-    createVisualNodeVec3(sphere, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+    createVisualNodeVec3(quadNode, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
 
     return sphere;
 }

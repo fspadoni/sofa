@@ -181,6 +181,8 @@ SOFA_SceneCreator_API void addTetraFEM(simulation::Node::SPtr currentNode, const
 SOFA_SceneCreator_API void addTriangleFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
                                           SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3);
 
+SOFA_SceneCreator_API simulation::Node::SPtr addHexaToQuadMapping(simulation::Node::SPtr currentNode, const std::string& topoName);
+
 /// Create a string composed of particles (at least 2) and springs
 SOFA_SceneCreator_API simulation::Node::SPtr massSpringString(
         simulation::Node::SPtr parent,

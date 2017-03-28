@@ -44,7 +44,7 @@ public:
 
     const char* APIName();
 
-    bool load(const char* filename);
+    virtual bool load(const char* filename);
     void createScene();
 
     void start();

@@ -72,6 +72,8 @@ struct TetrahedronVolumeMappingTest : public Mapping_test<_TestedMapping>
         const int Nin=4, Nout=perNode?4:1;
         this->inDofs->resize(Nin);
         this->outDofs->resize(Nout);
+        // No topology created in the child node
+        this->outDofs->d_useTopology.setValue(false);
 
         _testedMapping->d_volumePerNodes.setValue(perNode);
 

@@ -113,9 +113,7 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
          std::cout<< "topology named "<<TopoInput->getName()<<" found !! "<<path<<std::endl;
 
              */
-    std::cout<<"size of InputPositions="<<InputPositions.getValue().size()<<std::endl;
-
-    std::cout<<"size of InputPositions="<<InputPositions.getValue()<<std::endl;
+    std::cout<<"size of InputPositions="<<InputPositions.getValue().size()<<std::endl;    
 
 
     const VecCoord* in = &InputPositions.getValue();
@@ -260,7 +258,7 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
             }
         }
     }
-    else
+    else if(!tetrahedra.empty())
     {
         clear3d ( (*out).size() ); // reserve space for 3D mapping
         int c0 = tetrahedra.size();
@@ -319,6 +317,22 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
                 addPointInTetra ( index, coefs.ptr() , i);
             else
                 addPointInCube ( index-c0, coefs.ptr() );
+        }
+    }
+    else if (!cubes.empty())
+    {
+        baryPos->resize(cubes.size());
+        for (unsigned int i = 0; i < cubes.size(); ++i)
+        {
+            const sofa::core::topology::BaseMeshTopology::Hexahedron& cube = cubes[i];
+            Vector3 bary = Vector3(0.0, 0.0, 0.0);
+            for (unsigned int j = 0; j < 8; ++j)
+            {
+                Vector3 vertex = (*in)[cube[j]];
+                bary += vertex;
+            }
+
+            (*baryPos)[i] = bary / 8;
         }
     }
 

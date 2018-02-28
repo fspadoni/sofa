@@ -10,6 +10,7 @@ set(HEADER_FILES
     GetVectorVisitor.h
     SceneCreator.h
     SceneUtils.h
+    SofaComponentListener.h
 )
 
 set(SOURCE_FILES
@@ -17,6 +18,7 @@ set(SOURCE_FILES
     GetVectorVisitor.cpp
     SceneCreator.cpp
     SceneUtils.cpp
+    SofaComponentListener.cpp
     initSceneCreator.cpp
 )
 

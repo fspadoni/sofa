@@ -27,9 +27,11 @@ endif()
 if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND HEADER_FILES
         TopologicalChangeProcessor.h
+        SleevePinceManager.h
         )
     list(APPEND SOURCE_FILES
         TopologicalChangeProcessor.cpp
+        SleevePinceManager.cpp
         )
 
 endif()

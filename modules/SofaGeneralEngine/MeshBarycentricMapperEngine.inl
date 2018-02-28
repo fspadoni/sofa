@@ -51,6 +51,7 @@ MeshBarycentricMapperEngine<DataTypes>::MeshBarycentricMapperEngine()
     , computeLinearInterpolation(initData(&computeLinearInterpolation, false, "computeLinearInterpolation", "if true, computes a linear interpolation (debug)"))
     , f_interpolationIndices(initData(&f_interpolationIndices, "LinearInterpolationIndices", "Indices of a linear interpolation"))
     , f_interpolationValues(initData(&f_interpolationValues, "LinearInterpolationValues", "Values of a linear interpolation"))
+    , TopoInput(NULL)
 {
 }
 
@@ -92,27 +93,28 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
     using sofa::defaulttype::Mat3x3d;
     using sofa::defaulttype::Vec3d;
 
-    const std::string path = InputMeshName.getValue();
-
+    const std::string& path = InputMeshName.getValue();
+    if (BarycentricPositions.getValue().size() != 0)
+        return;
 
     if (path.size()>0)
     {
         this->getContext()->get(TopoInput ,path  );
-
     }
     else
-        TopoInput = NULL;
+        this->getContext()->get(TopoInput);
+
 
     if(TopoInput==NULL)
     {
         serr<<"no TopoInput found !!"<<sendl;
         return;
     }
-    /*
+    
     else
          std::cout<< "topology named "<<TopoInput->getName()<<" found !! "<<path<<std::endl;
 
-             */
+    
     std::cout<<"size of InputPositions="<<InputPositions.getValue().size()<<std::endl;    
 
 

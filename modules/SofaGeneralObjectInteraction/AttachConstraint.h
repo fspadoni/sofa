@@ -104,7 +104,7 @@ protected:
     virtual ~AttachConstraint();
 public:
     void clearConstraints();
-    void addConstraint(unsigned int index1, unsigned int index2);
+    void addConstraint(unsigned int index1, unsigned int index2, Real constraintFactor = 0.0);
 
     // -- Constraint interface
     void init() override;

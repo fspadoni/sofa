@@ -454,12 +454,14 @@ void AttachConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::addConstraint(unsigned int index1, unsigned int index2)
+void AttachConstraint<DataTypes>::addConstraint(unsigned int index1, unsigned int index2, Real constraintFactor)
 {
     f_indices1.beginEdit()->push_back(index1);
     f_indices1.endEdit();
     f_indices2.beginEdit()->push_back(index2);
     f_indices2.endEdit();
+    d_constraintFactor.beginEdit()->push_back(constraintFactor);
+    d_constraintFactor.endEdit();
 }
 
 // -- Constraint interface

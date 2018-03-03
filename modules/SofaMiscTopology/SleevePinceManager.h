@@ -31,10 +31,13 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
+#include <SofaDeformable/StiffSpringForceField.h>
+
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Visitor.h>
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaGeneralObjectInteraction/AttachConstraint.h>
 #include <sofa/defaulttype/Vec.h>
 
 #ifdef SOFA_HAVE_ZLIB
@@ -58,6 +61,9 @@ typedef float Real; ///< alias
 typedef double Real; ///< alias
 #endif
 
+typedef sofa::component::interactionforcefield::StiffSpringForceField< sofa::defaulttype::Vec3Types > StiffSpringFF;
+typedef sofa::component::interactionforcefield::StiffSpringForceField< sofa::defaulttype::Vec3Types > StiffSpringFF;
+typedef sofa::component::projectiveconstraintset::AttachConstraint< sofa::defaulttype::Vec3Types > AttachConstraint;
 
 /** Read file containing topological modification. Or apply input modifications
  * A timestep has to be established for each modification.
@@ -83,7 +89,11 @@ public:
 
     virtual void reinit() override;
 
-    std::vector< int > grabModel();
+    const sofa::helper::vector< int >& grabModel();
+    const sofa::helper::vector< int >& getGrabedIds() { return m_idgrabed; }
+    void releaseGrab();
+
+    void createFF();
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
@@ -110,12 +120,17 @@ public:
     bool computeBoundingBox();
     sofa::defaulttype::Vector3 m_min, m_max;
 
+    sofa::helper::vector <int> m_idgrabed;
+
 public:
     sofa::core::behavior::BaseMechanicalState* m_mord1;
     sofa::core::behavior::BaseMechanicalState* m_mord2;
     sofa::core::behavior::BaseMechanicalState* m_model;
 
-    
+    StiffSpringFF::SPtr m_forcefieldUP;
+    StiffSpringFF::SPtr m_forcefieldDOWN;
+
+    AttachConstraint::SPtr m_attach;
 
 };
 

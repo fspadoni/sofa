@@ -70,8 +70,11 @@ SleevePinceManager::SleevePinceManager()
     , m_mord1(NULL)
     , m_mord2(NULL)
     , m_model(NULL)
+    , m_forcefieldUP(NULL)
+    , m_forcefieldDOWN(NULL)
 {
     this->f_listening.setValue(true);
+    m_idgrabed.clear();
 }
 
 
@@ -150,7 +153,7 @@ bool SleevePinceManager::computeBoundingBox()
         SReal x = m_mord1->getPX(i);
         SReal y = m_mord1->getPY(i);
         SReal z = m_mord1->getPZ(i);
-        std::cout << "drawLine: " << x << " " << y << " " << z << std::endl;
+        //std::cout << "drawLine: " << x << " " << y << " " << z << std::endl;
         if (x < m_min[0])
             m_min[0] = x;
         if (y < m_min[1])
@@ -197,13 +200,15 @@ void SleevePinceManager::reinit()
         */
 }
 
-std::vector< int > SleevePinceManager::grabModel()
+const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 {
-    std::vector< int > candidatID;
+    m_idgrabed.clear();
 
     if (m_model == NULL)
-        return candidatID;
+        return m_idgrabed;
     
+    sofa::helper::vector<int> idsModel;
+
     std::cout << "m_model->getSize(): " << m_model->getSize() << std::endl;
     for (int i = 0; i < m_model->getSize(); i++)
     {
@@ -214,15 +219,137 @@ std::vector< int > SleevePinceManager::grabModel()
             && y > m_min[1] && y < m_max[1] 
             && z > m_min[2] && z < m_max[2] )
         {
-            candidatID.push_back(i);
-            std::cout << "Add: " << i << std::endl;
+            idsModel.push_back(i);
+            
         }
     }
-    
-    return candidatID;
+
+    std::cout << "Broad Phase detection: " << idsModel.size() << std::endl;
+
+    if (idsModel.size() == 0)
+        return m_idgrabed;
+
+
+    // Second distance to spheres
+
+    StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
+    StiffSpringFF* stiffspringforcefield_DOWN = static_cast<StiffSpringFF*>(m_forcefieldDOWN.get());
+    //AttachConstraint* attach = static_cast<AttachConstraint*>(m_attach.get());
+
+    int nbrVM1 = m_mord1->getSize();
+    int nbrVM2 = m_mord2->getSize();
+    for (int i = 0; i < idsModel.size(); i++)
+    {
+        SReal Mx = m_model->getPX(idsModel[i]);
+        SReal My = m_model->getPY(idsModel[i]);
+        SReal Mz = m_model->getPZ(idsModel[i]);
+
+        bool attached = false;
+        int idModel = -1;
+        float minDist = 2;
+        // compute bary on mordUP
+        for (int j = 0; j < nbrVM1; j++)
+        {
+            SReal x = m_mord1->getPX(j);
+            SReal y = m_mord1->getPY(j);
+            SReal z = m_mord1->getPZ(j);
+            SReal dist = (Mx - x)*(Mx - x) + (My - y)*(My - y) + (Mz - z)*(Mz - z);
+            dist = sqrt(dist);
+
+            if (dist < minDist) {
+                minDist = dist;
+                idModel = j;
+            }
+        }
+
+        if (idModel != -1)
+        {
+            stiffspringforcefield_UP->addSpring(idsModel[i], idModel, 100, 0.0, minDist);
+            //attach->addConstraint(idsModel[i], idModel, 1.0);
+            m_idgrabed.push_back(idsModel[i]);
+        }
+
+        
+        //attached = false;
+        //// compute bary on mordUP
+        //for (int j = 0; j < nbrVM2; j++)
+        //{
+        //    SReal x = m_mord2->getPX(j);
+        //    SReal y = m_mord2->getPY(j);
+        //    SReal z = m_mord2->getPZ(j);
+        //    SReal dist = (Mx - x)*(Mx - x) + (My - y)*(My - y) + (Mz - z)*(Mz - z);
+        //    dist = sqrt(dist);
+
+        //    if (dist < 2) {
+        //        stiffspringforcefield_DOWN->addSpring(idsModel[i], j, 100, 0.0, dist);
+        //        attached = true;
+        //    }
+        //}
+
+        //if (attached)
+        //    m_idgrabed.push_back(idsModel[i]);
+
+        //// compute bary on mordUP
+        //for (int j = 0; j < nbrVM1; j++)
+        //{
+        //    SReal x = m_mord1->getPX(j);
+        //    SReal y = m_mord1->getPY(j);
+        //    SReal z = m_mord1->getPZ(j);
+        //    SReal dist = (Mx - x)*(Mx - x) + (My - y)*(My - y) + (Mz - z)*(Mz - z);
+        //    dist = sqrt(dist);
+
+        //    if (dist < 0.5)
+        //        stiffspringforcefield->addSpring(idsModel[i], j, 100, 0.0, dist);
+        //}
+    }
+
+    sout << m_idgrabed << sendl;
+
+   
+
+    std::cout << "Narrow Phase detection: " << m_idgrabed.size() << std::endl;
+
+
+
+
+    return m_idgrabed;
 }
 
+void SleevePinceManager::releaseGrab()
+{    
+    if (!m_forcefieldUP || !m_forcefieldDOWN)
+        return;
+    m_idgrabed.clear();
 
+    StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
+    stiffspringforcefield_UP->clear();
+
+    StiffSpringFF* stiffspringforcefield_DOWN = static_cast<StiffSpringFF*>(m_forcefieldDOWN.get());
+    stiffspringforcefield_DOWN->clear();
+}
+
+void SleevePinceManager::createFF()
+{
+    m_forcefieldUP = sofa::core::objectmodel::New<StiffSpringFF>(dynamic_cast<mechaState*>(m_model), dynamic_cast<mechaState*>(m_mord1));
+    StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
+    stiffspringforcefield_UP->setName("pince_Forcefield_UP");
+    this->getContext()->addObject(stiffspringforcefield_UP);
+    stiffspringforcefield_UP->setStiffness(300);
+    stiffspringforcefield_UP->setDamping(1);
+    stiffspringforcefield_UP->init();
+
+    m_forcefieldDOWN = sofa::core::objectmodel::New<StiffSpringFF>(dynamic_cast<mechaState*>(m_model), dynamic_cast<mechaState*>(m_mord2));
+    StiffSpringFF* stiffspringforcefield_DOWN = static_cast<StiffSpringFF*>(m_forcefieldDOWN.get());
+    stiffspringforcefield_DOWN->setName("pince_Forcefield_DOWN");
+    this->getContext()->addObject(stiffspringforcefield_DOWN);
+    stiffspringforcefield_DOWN->init();
+
+    //m_attach = sofa::core::objectmodel::New<AttachConstraint>(dynamic_cast<mechaState*>(m_model), dynamic_cast<mechaState*>(m_mord1));
+    //AttachConstraint* attach = static_cast<AttachConstraint*>(m_attach.get());
+    //attach->setName("pince_attach");
+    //this->getContext()->addObject(attach);
+    //attach->init();
+}
 
 void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
@@ -236,8 +363,40 @@ void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
         case 'T':
         case 't':
         {
+            if (m_forcefieldUP == NULL || m_forcefieldDOWN == NULL)
+                createFF();
+
+            releaseGrab();
+
             computeBoundingBox();
             grabModel();
+            break;
+        }
+        case 'G':
+        case 'g':
+        {
+            releaseGrab();
+            break;
+        }
+        case 'Y':
+        case 'y':
+        {
+            m_mord1->applyTranslation(0, -0.1, 0);
+            m_mord2->applyTranslation(0, 0.1, 0);
+            break;
+        }
+        case 'H':
+        case 'h':
+        {
+            m_mord1->applyTranslation(0, 0.1, 0);
+            m_mord2->applyTranslation(0, -0.1, 0);
+            break;
+        }
+        case 'J':
+        case 'j':
+        {
+            m_mord1->applyTranslation(0, 0.1, 0);
+            m_mord2->applyTranslation(0, 0.1, 0);
             break;
         }
         }
@@ -250,6 +409,18 @@ void SleevePinceManager::draw(const core::visual::VisualParams* vparams)
         return;
 
     vparams->drawTool()->drawLine(m_min, m_max, Vec<4, float>(1.0, 0.0, 1.0, 1.0));
+
+    if (m_model == NULL)
+        return;
+
+    for (int i = 0; i < m_idgrabed.size(); i++)
+    {
+        SReal x = m_model->getPX(m_idgrabed[i]);
+        SReal y = m_model->getPY(m_idgrabed[i]);
+        SReal z = m_model->getPZ(m_idgrabed[i]);
+        vparams->drawTool()->drawPoint(sofa::defaulttype::Vec3f(x, y, z), Vec<4, float>(255.0, 0.0, 0.0, 1.0));
+    }
+        
    // std::cout << "drawLine: " << m_min[0] << " " << m_min[1] << " " << m_min[2] << std::endl;
 }
 

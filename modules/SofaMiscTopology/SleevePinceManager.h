@@ -120,11 +120,15 @@ public:
     Data<std::string> m_pathModel;
 
     bool computeBoundingBox();
+    void computeVertexIdsInBroadPhase();
+
     sofa::defaulttype::Vector3 m_min, m_max;
 
     sofa::helper::vector <int> m_idgrabed;
+    sofa::helper::vector <int> m_idBroadPhase;
 
-
+    void cutFromTetra();
+    void cutFromTriangles();
 
 public:
     sofa::core::behavior::BaseMechanicalState* m_mord1;
@@ -132,6 +136,7 @@ public:
     sofa::core::behavior::BaseMechanicalState* m_model;
 
     sofa::helper::vector<unsigned int> tetraIdsOnCut;
+    sofa::helper::vector<unsigned int> triIdsOnCut;
 
     StiffSpringFF::SPtr m_forcefieldUP;
     StiffSpringFF::SPtr m_forcefieldDOWN;
@@ -142,6 +147,7 @@ public:
     sofa::defaulttype::Vec3f xAxis;
     sofa::defaulttype::Vec3f yAxis;
     sofa::defaulttype::Vec3f zAxis;
+    sofa::defaulttype::Mat3x3f matP;
 };
 
 

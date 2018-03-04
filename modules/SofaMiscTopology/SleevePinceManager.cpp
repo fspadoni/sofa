@@ -33,6 +33,9 @@ using sofa::core::objectmodel::KeypressedEvent;
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 using sofa::core::objectmodel::KeyreleasedEvent;
 
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+
 #include <sofa/simulation/Simulation.h>
 
 
@@ -56,6 +59,7 @@ namespace misc
 SOFA_DECL_CLASS(SleevePinceManager)
 
 using namespace defaulttype;
+using namespace sofa::core::topology;
 
 typedef sofa::core::behavior::MechanicalState< sofa::defaulttype::Vec3Types > mechaState;
 
@@ -219,12 +223,12 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
             && y > m_min[1] && y < m_max[1] 
             && z > m_min[2] && z < m_max[2] )
         {
-            idsModel.push_back(i);
-            
+            //idsModel.push_back(i);
+            m_idgrabed.push_back(i);
         }
     }
 
-    std::cout << "Broad Phase detection: " << idsModel.size() << std::endl;
+    std::cout << "Broad Phase detection: " << m_idgrabed.size() << std::endl;
 
     if (idsModel.size() == 0)
         return m_idgrabed;
@@ -351,6 +355,124 @@ void SleevePinceManager::createFF()
     //attach->init();
 }
 
+void SleevePinceManager::computePlierAxis()
+{
+    zero = sofa::defaulttype::Vec3f(0, 0, 0);
+    xAxis = sofa::defaulttype::Vec3f(1, 0, 0);
+    yAxis = sofa::defaulttype::Vec3f(0, 1, 0);
+    zAxis = sofa::defaulttype::Vec3f(0, 0, 1);
+
+    if (m_mord1 == NULL)
+        return;
+
+    zero = sofa::defaulttype::Vec3f(m_mord1->getPX(0), m_mord1->getPY(0), m_mord1->getPZ(0));
+    xAxis = sofa::defaulttype::Vec3f(m_mord1->getPX(1), m_mord1->getPY(1), m_mord1->getPZ(1));
+    yAxis = sofa::defaulttype::Vec3f(m_mord1->getPX(20), m_mord1->getPY(20), m_mord1->getPZ(20));
+    zAxis = sofa::defaulttype::Vec3f(m_mord1->getPX(100), m_mord1->getPY(100), m_mord1->getPZ(100));
+
+    sofa::defaulttype::Vec3f xDir = (xAxis - zero); xDir.normalize();
+    sofa::defaulttype::Vec3f yDir = (yAxis - zero); yDir.normalize();
+    sofa::defaulttype::Vec3f zDir = (zAxis - zero); zDir.normalize();
+
+    sofa::defaulttype::Mat3x3f matP = sofa::defaulttype::Mat3x3f(xDir, yDir, zDir);
+
+    sofa::defaulttype::Vec3f test1 = sofa::defaulttype::Vec3f(m_mord1->getPX(3), m_mord1->getPY(3), m_mord1->getPZ(3));
+    sofa::defaulttype::Vec3f test2 = sofa::defaulttype::Vec3f(m_mord1->getPX(40), m_mord1->getPY(40), m_mord1->getPZ(40));
+    sofa::defaulttype::Vec3f test3 = sofa::defaulttype::Vec3f(m_mord1->getPX(45), m_mord1->getPY(45), m_mord1->getPZ(45));
+    std::cout << "test1 : " << test1 << " -> " << matP*(test1 - zero) << std::endl;
+    std::cout << "test2 : " << test2 << " -> " << matP*(test2 - zero) << std::endl;
+    std::cout << "test3 : " << test3 << " -> " << matP*(test3 - zero) << std::endl;
+
+    // Classify right/left points of the plier
+    sofa::helper::vector<int> idsLeft;
+    sofa::helper::vector<int> idsRight;
+    for (int i = 0; i < m_idgrabed.size(); i++)
+    {
+        sofa::defaulttype::Vec3f vert = sofa::defaulttype::Vec3f(m_model->getPX(m_idgrabed[i]), m_model->getPY(m_idgrabed[i]), m_model->getPZ(m_idgrabed[i]));
+        vert = matP*(vert - zero);
+
+        if (vert[0] < 0.0 || vert[0] > 8.0)
+            continue;
+
+        if (vert[2] >= -2.0 && vert[2] < 1.0)
+            idsLeft.push_back(m_idgrabed[i]);
+        else if (vert[2] >= 1.0 && vert[2] < 3.0)
+            idsRight.push_back(m_idgrabed[i]);
+    }
+
+    std::cout << "idsLeft: " << idsLeft.size() << std::endl;
+    std::cout << "idsRight: " << idsRight.size() << std::endl;
+    
+    // Detect all tetra on the cut path
+    sofa::component::topology::TetrahedronSetTopologyContainer* tetraCon;
+    m_model->getContext()->get(tetraCon);
+    if (tetraCon == NULL) {
+        std::cout << "Error: NO tetraCon" << std::endl;
+        return;
+    }
+    
+    // First get all tetra that are on the first side
+    sofa::helper::vector<unsigned int> tetraIds;
+    for (int i = 0; i < idsLeft.size(); ++i)
+    {
+        const BaseMeshTopology::TetrahedraAroundVertex& tetraAV = tetraCon->getTetrahedraAroundVertex(idsLeft[i]);
+        for (int j = 0; j < tetraAV.size(); ++j)
+        {
+            int tetraId = tetraAV[j];
+            bool found = false;
+            for (int k=0; k<tetraIds.size(); ++k)
+                if (tetraIds[k] == tetraId)
+                {
+                    found = true;
+                    break;
+                }
+
+            if (!found)
+                tetraIds.push_back(tetraId);
+        }
+    }
+
+    std::cout << "tetraIds: " << tetraIds.size() << std::endl;
+
+
+    // Then test for each tetra if one of the vertex is on the other side. If yes put on but path
+    tetraIdsOnCut.clear();
+    for (int i = 0; i < tetraIds.size(); ++i)
+    {
+        const BaseMeshTopology::Tetra& tetra = tetraCon->getTetra(tetraIds[i]);
+        for (unsigned int j = 0; j < 4; ++j)
+        {
+            int idV = tetra[j];
+            bool found = false;
+            for (unsigned int k = 0; k < idsRight.size(); ++k)
+            {
+                if (idsRight[k] == idV)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                tetraIdsOnCut.push_back(tetraIds[i]);
+                continue;
+            }
+        }
+    }
+
+    std::cout << "tetraIdsOnCut: " << tetraIdsOnCut.size() << std::endl;
+    sofa::component::topology::TetrahedronSetTopologyModifier* tetraModif;
+    m_model->getContext()->get(tetraModif);
+
+    if (tetraModif == NULL) {
+        std::cout << "Error: NO tetraModif" << std::endl;
+        return;
+    }
+
+    //tetraIdsOnCut.resize(30);
+    tetraModif->removeTetrahedra(tetraIdsOnCut);
+}
+
 void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (KeypressedEvent::checkEventType(event))
@@ -370,6 +492,8 @@ void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
 
             computeBoundingBox();
             grabModel();
+
+           
             break;
         }
         case 'G':
@@ -399,6 +523,14 @@ void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
             m_mord2->applyTranslation(0, 0.1, 0);
             break;
         }
+        case 'F':
+        case 'f':
+        {
+            computeBoundingBox();
+            grabModel();
+            computePlierAxis();
+            break;
+        }
         }
     }
 }
@@ -408,7 +540,16 @@ void SleevePinceManager::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
+    sofa::defaulttype::Vec4f color = sofa::defaulttype::Vec4f(0.2f, 1.0f, 1.0f, 1.0f);
     vparams->drawTool()->drawLine(m_min, m_max, Vec<4, float>(1.0, 0.0, 1.0, 1.0));
+    
+    glColor3f(1.0, 0.0, 0.0);
+    vparams->drawTool()->drawLine(zero, xAxis, color);
+    glColor3f(0.0, 1.0, 0.0);
+    vparams->drawTool()->drawLine(zero, yAxis, color);
+    glColor3f(0.0, 0.0, 1.0);
+    vparams->drawTool()->drawLine(zero, zAxis, color);
+    glColor3f(1.0, 1.0, 1.0);
 
     if (m_model == NULL)
         return;
@@ -420,6 +561,27 @@ void SleevePinceManager::draw(const core::visual::VisualParams* vparams)
         SReal z = m_model->getPZ(m_idgrabed[i]);
         vparams->drawTool()->drawPoint(sofa::defaulttype::Vec3f(x, y, z), Vec<4, float>(255.0, 0.0, 0.0, 1.0));
     }
+
+
+    sofa::component::topology::TetrahedronSetTopologyContainer* tetraCon;
+    m_model->getContext()->get(tetraCon);
+    if (tetraCon == NULL) {
+        std::cout << "Error: NO tetraCon" << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < tetraIdsOnCut.size(); i++)
+    {
+        const BaseMeshTopology::Tetra& tetra = tetraCon->getTetra(tetraIdsOnCut[i]);
+        
+        sofa::defaulttype::Vec3f p0 = sofa::defaulttype::Vec3f(m_model->getPX(tetra[0]), m_model->getPY(tetra[0]), m_model->getPZ(tetra[0]));
+        sofa::defaulttype::Vec3f p1 = sofa::defaulttype::Vec3f(m_model->getPX(tetra[1]), m_model->getPY(tetra[1]), m_model->getPZ(tetra[1]));
+        sofa::defaulttype::Vec3f p2 = sofa::defaulttype::Vec3f(m_model->getPX(tetra[2]), m_model->getPY(tetra[2]), m_model->getPZ(tetra[2]));
+        sofa::defaulttype::Vec3f p3 = sofa::defaulttype::Vec3f(m_model->getPX(tetra[3]), m_model->getPY(tetra[3]), m_model->getPZ(tetra[3]));
+
+        vparams->drawTool()->drawTetrahedron(p0, p1, p2, p3, color);
+    }
+
         
    // std::cout << "drawLine: " << m_min[0] << " " << m_min[1] << " " << m_min[2] << std::endl;
 }

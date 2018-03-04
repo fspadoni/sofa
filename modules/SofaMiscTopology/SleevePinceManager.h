@@ -111,6 +111,8 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    void computePlierAxis();
+
     int testModels();
 
     Data<std::string> m_pathMord1;
@@ -122,16 +124,24 @@ public:
 
     sofa::helper::vector <int> m_idgrabed;
 
+
+
 public:
     sofa::core::behavior::BaseMechanicalState* m_mord1;
     sofa::core::behavior::BaseMechanicalState* m_mord2;
     sofa::core::behavior::BaseMechanicalState* m_model;
+
+    sofa::helper::vector<unsigned int> tetraIdsOnCut;
 
     StiffSpringFF::SPtr m_forcefieldUP;
     StiffSpringFF::SPtr m_forcefieldDOWN;
 
     AttachConstraint::SPtr m_attach;
 
+    sofa::defaulttype::Vec3f zero;
+    sofa::defaulttype::Vec3f xAxis;
+    sofa::defaulttype::Vec3f yAxis;
+    sofa::defaulttype::Vec3f zAxis;
 };
 
 

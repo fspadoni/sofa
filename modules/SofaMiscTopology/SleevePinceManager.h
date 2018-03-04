@@ -142,6 +142,7 @@ public:
     StiffSpringFF::SPtr m_forcefieldDOWN;
 
     AttachConstraint::SPtr m_attach;
+	float m_oldCollisionStiffness;
 
     sofa::defaulttype::Vec3f zero;
     sofa::defaulttype::Vec3f xAxis;

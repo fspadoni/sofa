@@ -37,6 +37,7 @@ using sofa::core::objectmodel::KeyreleasedEvent;
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 
 #include <sofa/simulation/Simulation.h>
+#include <SofaBaseCollision/SphereModel.h>
 
 
 #include <time.h>
@@ -62,6 +63,7 @@ using namespace defaulttype;
 using namespace sofa::core::topology;
 
 typedef sofa::core::behavior::MechanicalState< sofa::defaulttype::Vec3Types > mechaState;
+using sofa::component::collision::SphereModel;
 
 int SleevePinceManagerClass = core::RegisterObject("Handle sleeve Pince.")
         .add< SleevePinceManager >();
@@ -76,6 +78,7 @@ SleevePinceManager::SleevePinceManager()
     , m_model(NULL)
     , m_forcefieldUP(NULL)
     , m_forcefieldDOWN(NULL)
+	, m_oldCollisionStiffness(300)
 {
     this->f_listening.setValue(true);
     m_idgrabed.clear();
@@ -271,45 +274,62 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
         }
 
         
-        //attached = false;
-        //// compute bary on mordUP
-        //for (int j = 0; j < nbrVM2; j++)
-        //{
-        //    SReal x = m_mord2->getPX(j);
-        //    SReal y = m_mord2->getPY(j);
-        //    SReal z = m_mord2->getPZ(j);
-        //    SReal dist = (Mx - x)*(Mx - x) + (My - y)*(My - y) + (Mz - z)*(Mz - z);
-        //    dist = sqrt(dist);
+        attached = false;
+		idModel = -1;
+		minDist = 2;
 
-        //    if (dist < 2) {
-        //        stiffspringforcefield_DOWN->addSpring(idsModel[i], j, 100, 0.0, dist);
-        //        attached = true;
-        //    }
-        //}
+        // compute bary on mordUP
+        for (int j = 0; j < nbrVM2; j++)
+        {
+            SReal x = m_mord2->getPX(j);
+            SReal y = m_mord2->getPY(j);
+            SReal z = m_mord2->getPZ(j);
+            SReal dist = (Mx - x)*(Mx - x) + (My - y)*(My - y) + (Mz - z)*(Mz - z);
+            dist = sqrt(dist);
 
-        //if (attached)
-        //    m_idgrabed.push_back(idsModel[i]);
+			if (dist < minDist) {
+				minDist = dist;
+				idModel = j;
+			}			
+        }
 
-        //// compute bary on mordUP
-        //for (int j = 0; j < nbrVM1; j++)
-        //{
-        //    SReal x = m_mord1->getPX(j);
-        //    SReal y = m_mord1->getPY(j);
-        //    SReal z = m_mord1->getPZ(j);
-        //    SReal dist = (Mx - x)*(Mx - x) + (My - y)*(My - y) + (Mz - z)*(Mz - z);
-        //    dist = sqrt(dist);
-
-        //    if (dist < 0.5)
-        //        stiffspringforcefield->addSpring(idsModel[i], j, 100, 0.0, dist);
-        //}
+		if (idModel != -1)
+		{
+			stiffspringforcefield_DOWN->addSpring(idsModel[i], idModel, 100, 0.0, minDist);
+			//attach->addConstraint(idsModel[i], idModel, 1.0);
+			m_idgrabed.push_back(idsModel[i]);
+		}
     }
 
     sout << m_idgrabed << sendl;
 
-   
+
+	// Reduce collision spheres
+	if (m_idgrabed.size() > 0)
+	{
+		std::cout << "Passe la " << std::endl;
+		std::vector<SphereModel*> col_models;
+
+		m_mord1->getContext()->get<SphereModel>(&col_models, sofa::core::objectmodel::BaseContext::Local);
+		if (!col_models.empty())
+		{
+			std::cout << "Passe la 2" << std::endl;
+			SphereModel* col_model = col_models[0];
+			m_oldCollisionStiffness = col_model->getContactStiffness(0);
+			col_model->setContactStiffness(100);
+		}
+
+		col_models.clear();
+		m_mord2->getContext()->get<SphereModel>(&col_models, sofa::core::objectmodel::BaseContext::Local);
+		if (!col_models.empty())
+		{
+			SphereModel* col_model = col_models[0];
+			col_model->setContactStiffness(100);
+		}
+
+	}
 
     std::cout << "Narrow Phase detection: " << m_idgrabed.size() << std::endl;
-
     return m_idgrabed;
 }
 
@@ -325,6 +345,22 @@ void SleevePinceManager::releaseGrab()
 
     StiffSpringFF* stiffspringforcefield_DOWN = static_cast<StiffSpringFF*>(m_forcefieldDOWN.get());
     stiffspringforcefield_DOWN->clear();
+
+	std::vector<SphereModel*> col_models;
+	m_mord1->getContext()->get<SphereModel>(&col_models, sofa::core::objectmodel::BaseContext::Local);
+	if (!col_models.empty())
+	{
+		SphereModel* col_model = col_models[0];
+		col_model->setContactStiffness(m_oldCollisionStiffness);
+	}
+
+	col_models.clear();
+	m_mord2->getContext()->get<SphereModel>(&col_models, sofa::core::objectmodel::BaseContext::Local);
+	if (!col_models.empty())
+	{
+		SphereModel* col_model = col_models[0];
+		col_model->setContactStiffness(m_oldCollisionStiffness);
+	}
 }
 
 void SleevePinceManager::createFF()

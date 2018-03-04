@@ -383,7 +383,7 @@ void SleevePinceManager::computePlierAxis()
     
 }
 
-void SleevePinceManager::cutFromTetra()
+void SleevePinceManager::cutFromTetra(float minX, float maxX)
 {
     if (m_idBroadPhase.empty())
         return;
@@ -396,7 +396,7 @@ void SleevePinceManager::cutFromTetra()
         sofa::defaulttype::Vec3f vert = sofa::defaulttype::Vec3f(m_model->getPX(m_idBroadPhase[i]), m_model->getPY(m_idBroadPhase[i]), m_model->getPZ(m_idBroadPhase[i]));
         vert = matP*(vert - zero);
 
-        if (vert[0] < 0.0 || vert[0] > 8.0)
+        if (vert[0] < minX || vert[0] > maxX)
             continue;
 
         if (vert[2] >= -2.0 && vert[2] < 1.0)
@@ -635,7 +635,9 @@ void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
             computeVertexIdsInBroadPhase();
             computePlierAxis();
             //cutFromTriangles();
-            cutFromTetra();
+            for (int i=0; i<7; i++)
+                cutFromTetra(i*2, i*2+2);
+
             break;
         }
         }

@@ -127,7 +127,7 @@ public:
     sofa::helper::vector <int> m_idgrabed;
     sofa::helper::vector <int> m_idBroadPhase;
 
-    void cutFromTetra();
+    void cutFromTetra(float minX, float maxX);
     void cutFromTriangles();
 
 public:

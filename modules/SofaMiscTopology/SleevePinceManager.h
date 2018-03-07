@@ -86,69 +86,83 @@ protected:
 
 public:
     virtual void init() override;
-
     virtual void reinit() override;
+    int testModels();
+    
+    const sofa::helper::vector< int >& vertexIdsInBroadPhase() { return m_idBroadPhase; }
+    const sofa::helper::vector< int >& vertexIdsGrabed() { return m_idgrabed; }
 
+
+    // global methods    
+    bool createFF();
+    bool computeBoundingBox();
+    void computeVertexIdsInBroadPhase();
+
+    // API from grabing
     const sofa::helper::vector< int >& grabModel();
-    const sofa::helper::vector< int >& getGrabedIds() { return m_idgrabed; }
+
     void releaseGrab();
 
-    void createFF();
+    
+    // API for cutting
+    void cutFromTetra(float minX, float maxX);
+    void cutFromTriangles();
+    
 
+    // Method from intern test
     virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void computePlierAxis();
 
+    
+
+    sofa::defaulttype::Vector3 m_min, m_max;
+
+
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MeshTopology.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-      /*  if (context->getMeshTopology() == NULL)
-            return false;*/
-
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    void draw(const core::visual::VisualParams* vparams) override;
+protected:
+    
 
-    void computePlierAxis();
-
-    int testModels();
-
+public:
+    // Path to the different mechanicalObject
     Data<std::string> m_pathMord1;
     Data<std::string> m_pathMord2;
     Data<std::string> m_pathModel;
-
-    bool computeBoundingBox();
-    void computeVertexIdsInBroadPhase();
-
-    sofa::defaulttype::Vector3 m_min, m_max;
-
+	    
+protected:
+    // Buffer of points ids 
     sofa::helper::vector <int> m_idgrabed;
     sofa::helper::vector <int> m_idBroadPhase;
 
-    void cutFromTetra(float minX, float maxX);
-    void cutFromTriangles();
+    float m_oldCollisionStiffness;
 
-public:
-    sofa::core::behavior::BaseMechanicalState* m_mord1;
-    sofa::core::behavior::BaseMechanicalState* m_mord2;
-    sofa::core::behavior::BaseMechanicalState* m_model;
-
-    sofa::helper::vector<unsigned int> tetraIdsOnCut;
-    sofa::helper::vector<unsigned int> triIdsOnCut;
-
-    StiffSpringFF::SPtr m_forcefieldUP;
-    StiffSpringFF::SPtr m_forcefieldDOWN;
-
-    AttachConstraint::SPtr m_attach;
-	float m_oldCollisionStiffness;
-
+    // Projection matrix to move into plier coordinate. X = along the plier, Y -> up, Z -> ortho to plier
+    sofa::defaulttype::Mat3x3f matP;
     sofa::defaulttype::Vec3f zero;
     sofa::defaulttype::Vec3f xAxis;
     sofa::defaulttype::Vec3f yAxis;
     sofa::defaulttype::Vec3f zAxis;
-    sofa::defaulttype::Mat3x3f matP;
+
+    // Pointer to the mechanicalObject
+    sofa::core::behavior::BaseMechanicalState* m_mord1;
+    sofa::core::behavior::BaseMechanicalState* m_mord2;
+    sofa::core::behavior::BaseMechanicalState* m_model;
+
+    // Pointer to the stiffspring FF created.
+    StiffSpringFF::SPtr m_forcefieldUP;
+    StiffSpringFF::SPtr m_forcefieldDOWN;
+
+    // Keep it for debug drawing
+    sofa::helper::vector<unsigned int> tetraIdsOnCut;
+    sofa::helper::vector<unsigned int> triIdsOnCut;
 };
 
 

@@ -209,11 +209,14 @@ void SleevePinceManager::reinit()
 
 void SleevePinceManager::computeVertexIdsInBroadPhase()
 {
-    m_idBroadPhase.clear();
+    // First compute boundingbox
+    computeBoundingBox();    
 
     if (m_model == NULL)
         return;
 
+    // Add to m_idBroadPhase all model vertices inside the BB
+    m_idBroadPhase.clear();
     for (int i = 0; i < m_model->getSize(); i++)
     {
         SReal x = m_model->getPX(i);
@@ -230,16 +233,19 @@ void SleevePinceManager::computeVertexIdsInBroadPhase()
 
 const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 {
+    // If no point in the broadphase, nothing to do
     if (m_idBroadPhase.size() == 0)
         return m_idBroadPhase;
 
+    if (m_forcefieldUP == NULL || m_forcefieldDOWN == NULL)
+        createFF();
 
-    // Second distance to spheres
 
     StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
     StiffSpringFF* stiffspringforcefield_DOWN = static_cast<StiffSpringFF*>(m_forcefieldDOWN.get());
-    //AttachConstraint* attach = static_cast<AttachConstraint*>(m_attach.get());
 
+    // For each point in the broadphase search the neariest point of the plier
+    // If none under minDist = 2; point is rejected
     int nbrVM1 = m_mord1->getSize();
     int nbrVM2 = m_mord2->getSize();
     for (int i = 0; i < m_idBroadPhase.size(); i++)
@@ -295,9 +301,9 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 
 		if (idModel != -1)
 		{
-			stiffspringforcefield_DOWN->addSpring(idsModel[i], idModel, 100, 0.0, minDist);
+			stiffspringforcefield_DOWN->addSpring(m_idBroadPhase[i], idModel, 100, 0.0, minDist);
 			//attach->addConstraint(idsModel[i], idModel, 1.0);
-			m_idgrabed.push_back(idsModel[i]);
+			m_idgrabed.push_back(m_idBroadPhase[i]);
 		}
     }
 
@@ -340,12 +346,14 @@ void SleevePinceManager::releaseGrab()
     m_idgrabed.clear();
     m_idBroadPhase.clear();
 
+    // Clear springs created during the grab
     StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
     stiffspringforcefield_UP->clear();
 
     StiffSpringFF* stiffspringforcefield_DOWN = static_cast<StiffSpringFF*>(m_forcefieldDOWN.get());
     stiffspringforcefield_DOWN->clear();
 
+    // Restaure the default collision behavior
 	std::vector<SphereModel*> col_models;
 	m_mord1->getContext()->get<SphereModel>(&col_models, sofa::core::objectmodel::BaseContext::Local);
 	if (!col_models.empty())
@@ -363,7 +371,7 @@ void SleevePinceManager::releaseGrab()
 	}
 }
 
-void SleevePinceManager::createFF()
+bool SleevePinceManager::createFF()
 {
     m_forcefieldUP = sofa::core::objectmodel::New<StiffSpringFF>(dynamic_cast<mechaState*>(m_model), dynamic_cast<mechaState*>(m_mord1));
     StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
@@ -379,11 +387,13 @@ void SleevePinceManager::createFF()
     this->getContext()->addObject(stiffspringforcefield_DOWN);
     stiffspringforcefield_DOWN->init();
 
-    //m_attach = sofa::core::objectmodel::New<AttachConstraint>(dynamic_cast<mechaState*>(m_model), dynamic_cast<mechaState*>(m_mord1));
-    //AttachConstraint* attach = static_cast<AttachConstraint*>(m_attach.get());
-    //attach->setName("pince_attach");
-    //this->getContext()->addObject(attach);
-    //attach->init();
+    if (m_forcefieldUP == NULL)
+        return -1001;
+
+    if (m_forcefieldDOWN == NULL)
+        return -1002;
+
+    return 0;
 }
 
 void SleevePinceManager::computePlierAxis()
@@ -626,12 +636,8 @@ void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
         case 'T':
         case 't':
         {
-            if (m_forcefieldUP == NULL || m_forcefieldDOWN == NULL)
-                createFF();
-
             releaseGrab();
 
-            computeBoundingBox();
             computeVertexIdsInBroadPhase();
             grabModel();
            
@@ -666,8 +672,7 @@ void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
         }
         case 'F':
         case 'f':
-        {
-            computeBoundingBox();
+        {            
             computeVertexIdsInBroadPhase();
             computePlierAxis();
             //cutFromTriangles();

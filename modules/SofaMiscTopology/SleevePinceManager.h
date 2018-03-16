@@ -94,7 +94,7 @@ public:
 
 
     // global methods    
-    bool createFF();
+    bool createFF(float _stiffness);
     bool computeBoundingBox();
     void computeVertexIdsInBroadPhase();
 
@@ -105,7 +105,8 @@ public:
 
     
     // API for cutting
-    void cutFromTetra(float minX, float maxX);
+    int cutFromTetra(float minX, float maxX, bool cut = true);
+    int pathCutFromTetra(float minX, float maxX);
     void cutFromTriangles();
     
 
@@ -113,7 +114,8 @@ public:
     virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
     void computePlierAxis();
 
-    
+    void setPlierAxis(sofa::defaulttype::Mat3x3f _matP) { matP = _matP; }
+    void setPlierOrigin(sofa::defaulttype::Vec3f _zero) { zero = _zero; }
 
     sofa::defaulttype::Vector3 m_min, m_max;
 
@@ -159,6 +161,7 @@ protected:
     // Pointer to the stiffspring FF created.
     StiffSpringFF::SPtr m_forcefieldUP;
     StiffSpringFF::SPtr m_forcefieldDOWN;
+    float m_stiffness;
 
     // Keep it for debug drawing
     sofa::helper::vector<unsigned int> tetraIdsOnCut;

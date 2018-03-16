@@ -79,6 +79,7 @@ SleevePinceManager::SleevePinceManager()
     , m_forcefieldUP(NULL)
     , m_forcefieldDOWN(NULL)
 	, m_oldCollisionStiffness(300)
+    , m_stiffness(100)
 {
     this->f_listening.setValue(true);
     m_idgrabed.clear();
@@ -238,7 +239,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
         return m_idBroadPhase;
 
     if (m_forcefieldUP == NULL || m_forcefieldDOWN == NULL)
-        createFF();
+        createFF(300);
 
 
     StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
@@ -274,7 +275,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 
         if (idModel != -1)
         {
-            stiffspringforcefield_UP->addSpring(m_idBroadPhase[i], idModel, 100, 0.0, minDist);
+            stiffspringforcefield_UP->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist);
             //attach->addConstraint(idsModel[i], idModel, 1.0);
             m_idgrabed.push_back(m_idBroadPhase[i]);
         }
@@ -301,7 +302,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 
 		if (idModel != -1)
 		{
-			stiffspringforcefield_DOWN->addSpring(m_idBroadPhase[i], idModel, 100, 0.0, minDist);
+			stiffspringforcefield_DOWN->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist);
 			//attach->addConstraint(idsModel[i], idModel, 1.0);
 			m_idgrabed.push_back(m_idBroadPhase[i]);
 		}
@@ -322,7 +323,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 			std::cout << "Passe la 2" << std::endl;
 			SphereModel* col_model = col_models[0];
 			m_oldCollisionStiffness = col_model->getContactStiffness(0);
-			col_model->setContactStiffness(100);
+			col_model->setContactStiffness(10);
 		}
 
 		col_models.clear();
@@ -330,7 +331,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 		if (!col_models.empty())
 		{
 			SphereModel* col_model = col_models[0];
-			col_model->setContactStiffness(100);
+			col_model->setContactStiffness(10);
 		}
 
 	}
@@ -371,13 +372,15 @@ void SleevePinceManager::releaseGrab()
 	}
 }
 
-bool SleevePinceManager::createFF()
+bool SleevePinceManager::createFF(float _stiffness)
 {
+    m_stiffness = _stiffness;
+
     m_forcefieldUP = sofa::core::objectmodel::New<StiffSpringFF>(dynamic_cast<mechaState*>(m_model), dynamic_cast<mechaState*>(m_mord1));
     StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
     stiffspringforcefield_UP->setName("pince_Forcefield_UP");
     this->getContext()->addObject(stiffspringforcefield_UP);
-    stiffspringforcefield_UP->setStiffness(300);
+    stiffspringforcefield_UP->setStiffness(m_stiffness);
     stiffspringforcefield_UP->setDamping(1);
     stiffspringforcefield_UP->init();
 
@@ -385,6 +388,8 @@ bool SleevePinceManager::createFF()
     StiffSpringFF* stiffspringforcefield_DOWN = static_cast<StiffSpringFF*>(m_forcefieldDOWN.get());
     stiffspringforcefield_DOWN->setName("pince_Forcefield_DOWN");
     this->getContext()->addObject(stiffspringforcefield_DOWN);
+    stiffspringforcefield_DOWN->setStiffness(m_stiffness);
+    stiffspringforcefield_DOWN->setDamping(1);
     stiffspringforcefield_DOWN->init();
 
     if (m_forcefieldUP == NULL)
@@ -424,15 +429,12 @@ void SleevePinceManager::computePlierAxis()
     //std::cout << "test2 : " << test2 << " -> " << matP*(test2 - zero) << std::endl;
     //std::cout << "test3 : " << test3 << " -> " << matP*(test3 - zero) << std::endl;
 
-
-
-    
 }
 
-void SleevePinceManager::cutFromTetra(float minX, float maxX)
+int SleevePinceManager::cutFromTetra(float minX, float maxX, bool cut)
 {
     if (m_idBroadPhase.empty())
-        return;
+        return 10000;
 
     // Classify right/left points of the plier
     sofa::helper::vector<int> idsLeft;
@@ -445,11 +447,14 @@ void SleevePinceManager::cutFromTetra(float minX, float maxX)
         if (vert[0] < minX || vert[0] > maxX)
             continue;
 
-        if (vert[2] >= -2.0 && vert[2] < 1.0)
+        if (vert[2] >= -10.0 && vert[2] < 0.0)
             idsLeft.push_back(m_idBroadPhase[i]);
-        else if (vert[2] >= 1.0 && vert[2] < 3.0)
+        else if (vert[2] >= 0.0 && vert[2] < 10.0)
             idsRight.push_back(m_idBroadPhase[i]);
     }
+
+    if (idsLeft.size() == 0 || idsRight.size() == 0)
+        return 20000;
 
     std::cout << "idsLeft: " << idsLeft.size() << std::endl;
     std::cout << "idsRight: " << idsRight.size() << std::endl;
@@ -459,7 +464,7 @@ void SleevePinceManager::cutFromTetra(float minX, float maxX)
     m_model->getContext()->get(tetraCon);
     if (tetraCon == NULL) {
         std::cout << "Error: NO tetraCon" << std::endl;
-        return;
+        return -40;
     }
 
     // First get all tetra that are on the first side
@@ -513,24 +518,74 @@ void SleevePinceManager::cutFromTetra(float minX, float maxX)
         }
     }
 
-    std::cout << "tetraIdsOnCut: " << tetraIdsOnCut.size() << std::endl;
-    sofa::component::topology::TetrahedronSetTopologyModifier* tetraModif;
-    m_model->getContext()->get(tetraModif);
+    if (cut)
+    {
+        std::cout << "tetraIdsOnCut: " << tetraIdsOnCut.size() << std::endl;
+        sofa::component::topology::TetrahedronSetTopologyModifier* tetraModif;
+        m_model->getContext()->get(tetraModif);
 
-    if (tetraModif == NULL) {
-        std::cout << "Error: NO tetraModif" << std::endl;
-        return;
+        if (tetraModif == NULL) {
+            std::cout << "Error: NO tetraModif" << std::endl;
+            return -45;
+        }
+
+
+        sofa::helper::vector<unsigned int> vitems;
+        vitems.reserve(items.size());
+        vitems.insert(vitems.end(), items.rbegin(), items.rend());
+
+        //vitems.resize(30);
+        tetraModif->removeTetrahedra(vitems);
+        tetraModif->notifyEndingEvent();
+        tetraModif->propagateTopologicalChanges();
+    }
+    else
+    {
+        m_idBroadPhase.clear();
+        m_idBroadPhase.insert(m_idBroadPhase.end(), items.rbegin(), items.rend());
     }
 
+    return items.size();
+}
 
-    sofa::helper::vector<unsigned int> vitems;
-    vitems.reserve(items.size());
-    vitems.insert(vitems.end(), items.rbegin(), items.rend());
+int SleevePinceManager::pathCutFromTetra(float minX, float maxX)
+{    
+    int res = cutFromTetra(minX, maxX, false);
+    if (res > 1000)
+        return 0;
 
-    //vitems.resize(30);
-    tetraModif->removeTetrahedra(vitems);
-    tetraModif->notifyEndingEvent();
-    tetraModif->propagateTopologicalChanges();
+    sofa::helper::vector<int> tetraIds = m_idBroadPhase;
+    m_idgrabed.clear();
+    sofa::component::topology::TetrahedronSetTopologyContainer* tetraCon;
+    m_model->getContext()->get(tetraCon);
+    if (tetraCon == NULL) {
+        std::cout << "Error: NO tetraCon" << std::endl;
+        return -40;
+    }
+
+    for (int i = 0; i < tetraIds.size(); i++)
+    {
+        const BaseMeshTopology::Tetra& tetra = tetraCon->getTetra(tetraIds[i]);
+        for (int j = 0; j < 4; j++) 
+        {
+            bool found = false;
+            int idV = tetra[j];
+            for (unsigned int k = 0; k < m_idgrabed.size(); ++k)
+            {
+                if (m_idgrabed[k] == idV)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+        if (!found) 
+            m_idgrabed.push_back(idV);
+        
+        }
+    }
+
+    return m_idgrabed.size();
 }
 
 
@@ -673,12 +728,15 @@ void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
         case 'F':
         case 'f':
         {            
+            releaseGrab();
+
             computeVertexIdsInBroadPhase();
             computePlierAxis();
             //cutFromTriangles();
             for (int i=0; i<7; i++)
                 cutFromTetra(i*2, i*2+2);
 
+            
             break;
         }
         }

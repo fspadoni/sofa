@@ -79,7 +79,7 @@ SleevePinceManager::SleevePinceManager()
     , m_forcefieldUP(NULL)
     , m_forcefieldDOWN(NULL)
 	, m_oldCollisionStiffness(300)
-    , m_stiffness(100)
+    , m_stiffness(500)
 {
     this->f_listening.setValue(true);
     m_idgrabed.clear();
@@ -239,7 +239,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
         return m_idBroadPhase;
 
     if (m_forcefieldUP == NULL || m_forcefieldDOWN == NULL)
-        createFF(300);
+        createFF(500);
 
 
     StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
@@ -275,7 +275,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 
         if (idModel != -1)
         {
-            stiffspringforcefield_UP->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist);
+            stiffspringforcefield_UP->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist*0.1);
             //attach->addConstraint(idsModel[i], idModel, 1.0);
             m_idgrabed.push_back(m_idBroadPhase[i]);
         }
@@ -302,7 +302,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 
 		if (idModel != -1)
 		{
-			stiffspringforcefield_DOWN->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist);
+			stiffspringforcefield_DOWN->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist*0.1);
 			//attach->addConstraint(idsModel[i], idModel, 1.0);
 			m_idgrabed.push_back(m_idBroadPhase[i]);
 		}
@@ -534,10 +534,16 @@ int SleevePinceManager::cutFromTetra(float minX, float maxX, bool cut)
         vitems.reserve(items.size());
         vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
+        for (int i = 0; i < vitems.size(); i++)
+        {
+            sofa::helper::vector<unsigned int> its;
+            its.push_back(vitems[i]);
+            tetraModif->removeTetrahedra(its);
+            tetraModif->notifyEndingEvent();
+            tetraModif->propagateTopologicalChanges();
+        }
         //vitems.resize(30);
-        tetraModif->removeTetrahedra(vitems);
-        tetraModif->notifyEndingEvent();
-        tetraModif->propagateTopologicalChanges();
+        
     }
     else
     {

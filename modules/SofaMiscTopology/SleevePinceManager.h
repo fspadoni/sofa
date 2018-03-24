@@ -96,7 +96,7 @@ public:
     // global methods    
     bool createFF(float _stiffness);
     bool computeBoundingBox();
-    void computeVertexIdsInBroadPhase();
+    void computeVertexIdsInBroadPhase(float margin = 0.0);
 
     // API from grabing
     const sofa::helper::vector< int >& grabModel();

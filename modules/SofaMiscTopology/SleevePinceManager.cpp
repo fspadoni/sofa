@@ -208,7 +208,7 @@ void SleevePinceManager::reinit()
         */
 }
 
-void SleevePinceManager::computeVertexIdsInBroadPhase()
+void SleevePinceManager::computeVertexIdsInBroadPhase(float margin)
 {
     // First compute boundingbox
     computeBoundingBox();    
@@ -223,9 +223,9 @@ void SleevePinceManager::computeVertexIdsInBroadPhase()
         SReal x = m_model->getPX(i);
         SReal y = m_model->getPY(i);
         SReal z = m_model->getPZ(i);
-        if (x > m_min[0] && x < m_max[0]
-            && y > m_min[1] && y < m_max[1]
-            && z > m_min[2] && z < m_max[2])
+        if (x > m_min[0] - margin && x < m_max[0] + margin
+            && y > m_min[1] - margin && y < m_max[1] + margin
+            && z > m_min[2] - margin && z < m_max[2] + margin)
         {
             m_idBroadPhase.push_back(i);
         }
@@ -447,9 +447,9 @@ int SleevePinceManager::cutFromTetra(float minX, float maxX, bool cut)
         if (vert[0] < minX || vert[0] > maxX)
             continue;
 
-        if (vert[2] >= -10.0 && vert[2] < 0.0)
+        if (vert[2] >= -20.0 && vert[2] < 0.0)
             idsLeft.push_back(m_idBroadPhase[i]);
-        else if (vert[2] >= 0.0 && vert[2] < 10.0)
+        else if (vert[2] >= 0.0 && vert[2] < 20.0)
             idsRight.push_back(m_idBroadPhase[i]);
     }
 
@@ -733,10 +733,28 @@ void SleevePinceManager::handleEvent(sofa::core::objectmodel::Event* event)
             computeVertexIdsInBroadPhase();
             computePlierAxis();
             //cutFromTriangles();
-            for (int i=0; i<7; i++)
-                cutFromTetra(i*2, i*2+2);
+            //for (int i=0; i<7; i++)
+            //    cutFromTetra(i*2, i*2+2);
+
+            cutFromTetra(0, 14, false);
 
             
+            break;
+        }
+        case 'D':
+        case 'd':
+        {
+            releaseGrab();
+
+            computeVertexIdsInBroadPhase();
+            computePlierAxis();
+            //cutFromTriangles();
+            /*for (int i=0; i<7; i++)
+                cutFromTetra(i*2, i*2+2);*/
+
+            cutFromTetra(0, 14, true);
+
+
             break;
         }
         }

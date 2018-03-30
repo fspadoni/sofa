@@ -256,8 +256,10 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
         SReal Mz = m_model->getPZ(m_idBroadPhase[i]);
 
         bool attached = false;
-        int idModel = -1;
-        float minDist = 2;
+        int idModel1 = -1;
+		int idModel2 = -1;
+        float minDist1 = 2;
+		float minDist2 = 2;
         // compute bary on mordUP
         for (int j = 0; j < nbrVM1; j++)
         {
@@ -267,23 +269,24 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
             SReal dist = (Mx - x)*(Mx - x) + (My - y)*(My - y) + (Mz - z)*(Mz - z);
             dist = sqrt(dist);
 
-            if (dist < minDist) {
-                minDist = dist;
-                idModel = j;
+            if (dist < minDist1) {
+				minDist1 = dist;
+				idModel1 = j;
             }
         }
 
-        if (idModel != -1)
+        if (idModel1 != -1)
         {
-            stiffspringforcefield_UP->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist*0.1);
+
+            //stiffspringforcefield_UP->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist);
             //attach->addConstraint(idsModel[i], idModel, 1.0);
-            m_idgrabed.push_back(m_idBroadPhase[i]);
+            //m_idgrabed.push_back(m_idBroadPhase[i]);
         }
 
         
         attached = false;
-		idModel = -1;
-		minDist = 2;
+		//idModel = -1;
+		//minDist = 2;
 
         // compute bary on mordUP
         for (int j = 0; j < nbrVM2; j++)
@@ -294,18 +297,44 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
             SReal dist = (Mx - x)*(Mx - x) + (My - y)*(My - y) + (Mz - z)*(Mz - z);
             dist = sqrt(dist);
 
-			if (dist < minDist) {
-				minDist = dist;
-				idModel = j;
+			if (dist < minDist2) {
+				minDist2 = dist;
+				idModel2 = j;
 			}			
         }
 
-		if (idModel != -1)
+		if (idModel2 != -1)
 		{
-			stiffspringforcefield_DOWN->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist*0.1);
+			//stiffspringforcefield_DOWN->addSpring(m_idBroadPhase[i], idModel, m_stiffness, 0.0, minDist);
 			//attach->addConstraint(idsModel[i], idModel, 1.0);
+			//m_idgrabed.push_back(m_idBroadPhase[i]);
+		}
+
+		int choice = 0;
+		if (idModel1 != -1 && idModel2 != -1)
+		{
+			if (minDist1 < minDist2)
+				choice = 1;
+			else
+				choice = 2;
+		}
+		else if (idModel1 != -1)
+			choice = 1;
+		else if (idModel2 != -1)
+			choice = 2;
+
+		if (choice == 1)
+		{
+			stiffspringforcefield_UP->addSpring(m_idBroadPhase[i], idModel1, m_stiffness, 0.0, minDist1);
 			m_idgrabed.push_back(m_idBroadPhase[i]);
 		}
+		else if (choice == 2)
+		{
+			stiffspringforcefield_DOWN->addSpring(m_idBroadPhase[i], idModel2, m_stiffness, 0.0, minDist2);
+			m_idgrabed.push_back(m_idBroadPhase[i]);
+		}
+
+
     }
 
     sout << m_idgrabed << sendl;
@@ -323,7 +352,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 			std::cout << "Passe la 2" << std::endl;
 			SphereModel* col_model = col_models[0];
 			m_oldCollisionStiffness = col_model->getContactStiffness(0);
-			col_model->setContactStiffness(10);
+			col_model->setContactStiffness(1);
 		}
 
 		col_models.clear();
@@ -331,7 +360,7 @@ const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 		if (!col_models.empty())
 		{
 			SphereModel* col_model = col_models[0];
-			col_model->setContactStiffness(10);
+			col_model->setContactStiffness(1);
 		}
 
 	}
@@ -381,7 +410,7 @@ bool SleevePinceManager::createFF(float _stiffness)
     stiffspringforcefield_UP->setName("pince_Forcefield_UP");
     this->getContext()->addObject(stiffspringforcefield_UP);
     stiffspringforcefield_UP->setStiffness(m_stiffness);
-    stiffspringforcefield_UP->setDamping(1);
+    stiffspringforcefield_UP->setDamping(0);
     stiffspringforcefield_UP->init();
 
     m_forcefieldDOWN = sofa::core::objectmodel::New<StiffSpringFF>(dynamic_cast<mechaState*>(m_model), dynamic_cast<mechaState*>(m_mord2));
@@ -389,7 +418,7 @@ bool SleevePinceManager::createFF(float _stiffness)
     stiffspringforcefield_DOWN->setName("pince_Forcefield_DOWN");
     this->getContext()->addObject(stiffspringforcefield_DOWN);
     stiffspringforcefield_DOWN->setStiffness(m_stiffness);
-    stiffspringforcefield_DOWN->setDamping(1);
+    stiffspringforcefield_DOWN->setDamping(0);
     stiffspringforcefield_DOWN->init();
 
     if (m_forcefieldUP == NULL)
@@ -436,6 +465,8 @@ int SleevePinceManager::cutFromTetra(float minX, float maxX, bool cut)
     if (m_idBroadPhase.empty())
         return 10000;
 
+	bool lastCut = true;
+
     // Classify right/left points of the plier
     sofa::helper::vector<int> idsLeft;
     sofa::helper::vector<int> idsRight;
@@ -444,8 +475,26 @@ int SleevePinceManager::cutFromTetra(float minX, float maxX, bool cut)
         sofa::defaulttype::Vec3f vert = sofa::defaulttype::Vec3f(m_model->getPX(m_idBroadPhase[i]), m_model->getPY(m_idBroadPhase[i]), m_model->getPZ(m_idBroadPhase[i]));
         vert = matP*(vert - zero);
 
-        if (vert[0] < minX || vert[0] > maxX)
-            continue;
+		if (vert[2] < -20.0 || vert[2] > 20.0) // outside on the borders
+			continue;
+		
+		// backward test
+		if (vert[0] < minX)
+		{
+			//if (vert[2] > -5.0 || vert[2] < 5.0)
+			//	return -10000;
+			//else
+				continue;
+		}
+
+		// frontward test
+		if (vert[0] > maxX)
+		{
+			if (vert[2] > -5.0 || vert[2] < 5.0)
+				lastCut = false;
+
+			continue;
+		}
 
         if (vert[2] >= -20.0 && vert[2] < 0.0)
             idsLeft.push_back(m_idBroadPhase[i]);
@@ -542,6 +591,7 @@ int SleevePinceManager::cutFromTetra(float minX, float maxX, bool cut)
             tetraModif->notifyEndingEvent();
             tetraModif->propagateTopologicalChanges();
         }
+
         //vitems.resize(30);
         
     }
@@ -550,6 +600,9 @@ int SleevePinceManager::cutFromTetra(float minX, float maxX, bool cut)
         m_idBroadPhase.clear();
         m_idBroadPhase.insert(m_idBroadPhase.end(), items.rbegin(), items.rend());
     }
+
+	if (lastCut)
+		return 40000;
 
     return items.size();
 }

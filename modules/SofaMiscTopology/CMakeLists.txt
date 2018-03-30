@@ -28,10 +28,12 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND HEADER_FILES
         TopologicalChangeProcessor.h
         SleevePinceManager.h
+        SleevePositionsMapper.h
         )
     list(APPEND SOURCE_FILES
         TopologicalChangeProcessor.cpp
         SleevePinceManager.cpp
+        SleevePositionsMapper.cpp
         )
 
 endif()

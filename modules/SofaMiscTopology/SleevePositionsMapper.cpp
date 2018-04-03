@@ -85,6 +85,7 @@ void SleevePositionsMapper::init()
 
 	addInput(&d_positions);
 	addOutput(&m_tubePositions);
+	addOutput(&m_grasPositions);	
 	setDirtyValue();
 }
 
@@ -97,16 +98,22 @@ void SleevePositionsMapper::reinit()
 
 void SleevePositionsMapper::update()
 {
-	//std::cout << "SleevePositionsMapper::update()" << std::endl;
+	std::cout << "SleevePositionsMapper::update()" << std::endl;
 	cleanDirty();
 
-	const sofa::helper::vector<unsigned int>& _tetraTube = m_tetraTube.getValue();
+	const sofa::helper::vector<int>& _tetraTube = m_tetraTube.getValue();
 	const sofa::helper::vector<sofa::defaulttype::Vec<3, SReal> >& _positions = d_positions.getValue();
 	helper::vector<sofa::defaulttype::Vec<3, SReal> >& tubePositions = *m_tubePositions.beginEdit();
 	tubePositions.resize(_tetraTube.size());
 	for (int i = 0; i < _tetraTube.size(); i++)
 	{
-		const BaseMeshTopology::Tetra& tetra = m_topo->getTetra(_tetraTube[i]);
+		int idTetra = _tetraTube[i];
+		if (idTetra == -1) {
+			tubePositions[i] = sofa::defaulttype::Vec3f(666.666, 666.666, 666.666);
+			continue;
+		}
+
+		const BaseMeshTopology::Tetra& tetra = m_topo->getTetra(idTetra);
 
 		sofa::defaulttype::Vec3f p0 = _positions[tetra[0]];
 		sofa::defaulttype::Vec3f p1 = _positions[tetra[1]];
@@ -115,8 +122,39 @@ void SleevePositionsMapper::update()
 
 		tubePositions[i] = (p0 + p1 + p2 + p3) / 4;
 	}
-
 	m_tubePositions.endEdit();
+
+	const sofa::helper::vector<int>& _tetraFat = m_tetraFat.getValue();
+	helper::vector<sofa::defaulttype::Vec<3, SReal> >& grasPositions = *m_grasPositions.beginEdit();
+	grasPositions.resize(_tetraFat.size());
+	for (int i = 0; i < _tetraFat.size()/3; i++)
+	{
+		sofa::defaulttype::Vec3i idTetras;
+
+		idTetras[0] = _tetraFat[i * 3];
+		idTetras[1] = _tetraFat[i * 3 + 1];
+		idTetras[2] = _tetraFat[i * 3 + 2];
+
+		if (idTetras[0] == -1 || idTetras[1] == -1 || idTetras[2] == -1) {
+			grasPositions[i * 3] = sofa::defaulttype::Vec3f(666.666, 666.666, 666.666);
+			grasPositions[i * 3 + 1] = sofa::defaulttype::Vec3f(666.666, 666.666, 666.666);
+			grasPositions[i * 3 + 2] = sofa::defaulttype::Vec3f(666.666, 666.666, 666.666);
+			continue;
+		}
+
+		for (int j = 0; j < 3; j++)
+		{
+			const BaseMeshTopology::Tetra& tetra = m_topo->getTetra(idTetras[j]);
+			sofa::defaulttype::Vec3f p0 = _positions[tetra[0]];
+			sofa::defaulttype::Vec3f p1 = _positions[tetra[1]];
+			sofa::defaulttype::Vec3f p2 = _positions[tetra[2]];
+			sofa::defaulttype::Vec3f p3 = _positions[tetra[3]];
+
+			grasPositions[i * 3 + j] = (p0 + p1 + p2 + p3) / 4;
+		}
+	}
+	m_grasPositions.endEdit();
+
 }
 
 void SleevePositionsMapper::handleTopologyChange()
@@ -131,16 +169,17 @@ void SleevePositionsMapper::handleTopologyChange()
 		{
 		case core::topology::TETRAHEDRAREMOVED:
 		{
-			sofa::helper::vector<unsigned int>& _tetraTube = *m_tetraTube.beginEdit();
-			sofa::helper::vector<unsigned int>& _tetraFat = *m_tetraFat.beginEdit();
+			sofa::helper::vector<int>& _tetraTube = *m_tetraTube.beginEdit();
+			sofa::helper::vector<int>& _tetraFat = *m_tetraFat.beginEdit();
 
 			const sofa::helper::vector<unsigned int> &tab = (static_cast< const sofa::core::topology::TetrahedraRemoved *>(*itBegin))->getArray();
 			int idLastTetra = m_topo->getNumberOfTetrahedra()-1;
 			bool updateNeeded = false;
-
+			
 			for (unsigned int i = 0; i < tab.size(); ++i)
 			{
 				int idTetraRemoved = tab[i];
+				std::cout << "idTetraRemoved: " << idTetraRemoved << std::endl;
 				// check tetra tube
 				for (unsigned int j = 0; j < _tetraTube.size(); ++j)
 				{
@@ -150,6 +189,9 @@ void SleevePositionsMapper::handleTopologyChange()
 						_tetraTube[j] = idTetraRemoved;
 						updateNeeded = true;
 					}
+
+					if (idTetraRemoved == _tetraTube[j])
+						_tetraTube[j] = -1;
 				}
 
 				// check tetra fat
@@ -161,6 +203,9 @@ void SleevePositionsMapper::handleTopologyChange()
 						_tetraFat[j] = idTetraRemoved;
 						updateNeeded = true;
 					}
+
+					if (idTetraRemoved == _tetraFat[j])
+						_tetraFat[j] = -1;
 				}
 				idLastTetra--;
 			}
@@ -191,7 +236,7 @@ void SleevePositionsMapper::draw(const core::visual::VisualParams* vparams)
 
 	sofa::defaulttype::Vec4f color = sofa::defaulttype::Vec4f(0.2f, 1.0f, 1.0f, 1.0f);
 	const sofa::helper::vector<sofa::defaulttype::Vec<3, SReal> >& _positions = d_positions.getValue();
-	const sofa::helper::vector<unsigned int>& _tetraTube = m_tetraTube.getValue();
+	const sofa::helper::vector<int>& _tetraTube = m_tetraTube.getValue();
     for (int i = 0; i < _tetraTube.size(); i++)
     {
         const BaseMeshTopology::Tetra& tetra = m_topo->getTetra(_tetraTube[i]);
@@ -223,6 +268,13 @@ void SleevePositionsMapper::draw(const core::visual::VisualParams* vparams)
 	for (int i = 0; i < tubePositions.size()-1; i++)
 	{
 		vparams->drawTool()->drawLine(tubePositions[i], tubePositions[i+1], Vec<4, float>(1.0, 0.0, 1.0, 1.0));
+	}
+
+	const helper::vector<sofa::defaulttype::Vec<3, SReal> >& grasPositions = m_grasPositions.getValue();
+
+	for (int i = 0; i < grasPositions.size(); i++)
+	{
+		vparams->drawTool()->drawPoint(grasPositions[i], Vec<4, float>(1.0, 0.0, 1.0, 1.0));
 	}
 
    // std::cout << "drawLine: " << m_min[0] << " " << m_min[1] << " " << m_min[2] << std::endl;

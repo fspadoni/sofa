@@ -98,6 +98,9 @@ public:
     bool computeBoundingBox();
     void computeVertexIdsInBroadPhase(float margin = 0.0);
 
+	bool unactiveTool();
+	bool reactiveTool();
+
     // API from grabing
     const sofa::helper::vector< int >& grabModel();
 

@@ -78,7 +78,7 @@ SleevePinceManager::SleevePinceManager()
     , m_model(NULL)
     , m_forcefieldUP(NULL)
     , m_forcefieldDOWN(NULL)
-	, m_oldCollisionStiffness(300)
+	, m_oldCollisionStiffness(5000)
     , m_stiffness(500)
 {
     this->f_listening.setValue(true);
@@ -231,6 +231,68 @@ void SleevePinceManager::computeVertexIdsInBroadPhase(float margin)
         }
     }
 }
+
+bool SleevePinceManager::unactiveTool()
+{
+	if (m_model == NULL)
+		return false;
+
+	std::vector<SphereModel*> col_models;
+	m_mord1->getContext()->get<SphereModel>(&col_models, sofa::core::objectmodel::BaseContext::Local);
+	if (!col_models.empty())
+	{
+		SphereModel* col_model = col_models[0];
+		SReal contactS = col_model->getContactStiffness(0);
+		if (m_oldCollisionStiffness < contactS)
+			m_oldCollisionStiffness = contactS;
+		col_model->setContactStiffness(0.0);
+	}
+
+	col_models.clear();
+	m_mord2->getContext()->get<SphereModel>(&col_models, sofa::core::objectmodel::BaseContext::Local);
+	if (!col_models.empty())
+	{
+		SphereModel* col_model = col_models[0];
+		col_model->setContactStiffness(0.0);
+	}
+
+	if (!m_forcefieldUP || !m_forcefieldDOWN)
+		return false;
+	m_idgrabed.clear();
+	m_idBroadPhase.clear();
+
+	// Clear springs created during the grab
+	StiffSpringFF* stiffspringforcefield_UP = static_cast<StiffSpringFF*>(m_forcefieldUP.get());
+	stiffspringforcefield_UP->clear();
+
+	StiffSpringFF* stiffspringforcefield_DOWN = static_cast<StiffSpringFF*>(m_forcefieldDOWN.get());
+	stiffspringforcefield_DOWN->clear();
+
+	return true;
+}
+
+bool SleevePinceManager::reactiveTool()
+{
+	// Restaure the default collision behavior
+	std::vector<SphereModel*> col_models;
+	m_mord1->getContext()->get<SphereModel>(&col_models, sofa::core::objectmodel::BaseContext::Local);
+	if (!col_models.empty())
+	{
+		SphereModel* col_model = col_models[0];
+		col_model->setContactStiffness(m_oldCollisionStiffness);
+	}
+
+	col_models.clear();
+	m_mord2->getContext()->get<SphereModel>(&col_models, sofa::core::objectmodel::BaseContext::Local);
+	if (!col_models.empty())
+	{
+		SphereModel* col_model = col_models[0];
+		col_model->setContactStiffness(m_oldCollisionStiffness);
+	}
+
+	return true;
+}
+
 
 const sofa::helper::vector< int >& SleevePinceManager::grabModel()
 {
@@ -389,7 +451,7 @@ void SleevePinceManager::releaseGrab()
 	if (!col_models.empty())
 	{
 		SphereModel* col_model = col_models[0];
-		col_model->setContactStiffness(m_oldCollisionStiffness);
+		col_model->setContactStiffness(m_oldCollisionStiffness); // TODO: check why this doesn't work
 	}
 
 	col_models.clear();

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,6 +46,10 @@ namespace system
 class SOFA_HELPER_API FileSystem
 {
 public:
+
+/// @brief Get the extension of a file from an absolute path description
+/// @return i.e. if given"a/b/c.d", return "d"
+static std::string getExtension(const std::string& filename);
 
 /// @brief List the content of a directory.
 ///
@@ -96,6 +100,9 @@ static bool isDirectory(const std::string& path);
 
 /// @brief Return true if and only if the given file path is absolute.
 static bool isAbsolute(const std::string& path);
+
+/// @brief Return true if and only if the given file path is an existing file.
+static bool isFile(const std::string& path);
 
 /// @brief Replace backslashes with slashes.
 static std::string convertBackSlashesToSlashes(const std::string& path);

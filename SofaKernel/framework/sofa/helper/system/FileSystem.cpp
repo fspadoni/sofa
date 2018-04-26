@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,6 +44,7 @@
 #endif
 
 #include <cassert>
+#include "SetDirectory.h"
 
 namespace sofa
 {
@@ -51,6 +52,16 @@ namespace helper
 {
 namespace system
 {
+
+std::string FileSystem::getExtension(const std::string& filename)
+{
+    std::string s = filename;
+    std::string::size_type pos = s.find_last_of('.');
+    if (pos == std::string::npos)
+        return ""; // no extension
+    else
+        return s.substr(pos+1);
+}
 
 
 #if defined(WIN32)
@@ -282,6 +293,14 @@ bool FileSystem::isAbsolute(const std::string& path)
     return !path.empty()
             && (pathHasDrive(path)
                 || path[0] == '/');
+}
+
+bool FileSystem::isFile(const std::string &path)
+{
+    return
+            FileSystem::exists(path) &&
+            !FileSystem::isDirectory(path)
+    ;
 }
 
 std::string FileSystem::convertBackSlashesToSlashes(const std::string& path)

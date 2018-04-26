@@ -21,5 +21,6 @@ sofa_add_application(meshconv meshconv OFF)
 
 sofa_add_application(SofaPhysicsAPI SofaPhysicsAPI)
 sofa_add_application(SofaGuiGlut SofaGuiGlut OFF)
+sofa_add_application(SofaAdvancePhysicsAPI SofaAdvancePhysicsAPI)
 
 sofa_add_application(runSofa runSofa ON)

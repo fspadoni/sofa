@@ -38,7 +38,7 @@
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
-#include <sofa/helper/system/glut.h>
+#include "../SofaGuiGlut/glut.h"
 #include <sofa/helper/init.h>
 
 #include <sofa/gui/BaseGUI.h>

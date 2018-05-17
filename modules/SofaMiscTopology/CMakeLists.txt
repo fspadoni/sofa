@@ -12,13 +12,9 @@ initMiscTopology.cpp
 
 list(APPEND HEADER_FILES
 TopologicalChangeProcessor.h
-SleevePinceManager.h
-SleevePositionsMapper.h
 )
 list(APPEND SOURCE_FILES
 TopologicalChangeProcessor.cpp
-SleevePinceManager.cpp
-SleevePositionsMapper.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

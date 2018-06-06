@@ -16,7 +16,8 @@
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">
             <OglShader fileFragmentShaders="['shaders/toonShading.frag']" fileVertexShaders="['shaders/toonShading.vert']" />
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/liver-smooth.obj" />
+            <OglModel name="VisualModel" src="@meshLoader0" color="red" />
             <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">

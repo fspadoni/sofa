@@ -15,7 +15,8 @@
             <UniformMass totalmass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.8 1.0" scale="0.3" />
+                <MeshObjLoader name="meshLoader0" filename="mesh/smCube27.obj" scale="0.3" />
+                <OglModel name="Visual" src="@meshLoader0" color="0.0 0.5 0.8 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -33,7 +34,8 @@
             <UniformMass totalmass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.9 0.8 1.0" scale="0.3" />
+                <MeshObjLoader name="meshLoader1" filename="mesh/smCube27.obj" scale="0.3" />
+                <OglModel name="Visual" src="@meshLoader1" color="0.0 0.9 0.8 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -51,7 +53,8 @@
             <UniformMass totalmass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.8 1.0" scale="0.3" />
+                <MeshObjLoader name="meshLoader2" filename="mesh/smCube27.obj" scale="0.3" />
+                <OglModel name="Visual" src="@meshLoader2" color="0.0 0.5 0.8 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -69,7 +72,8 @@
             <UniformMass totalmass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.5 0.0 0.5 1.0" scale="0.3" />
+                <MeshObjLoader name="meshLoader3" filename="mesh/smCube27.obj" scale="0.3" />
+                <OglModel name="Visual" src="@meshLoader3" color="0.5 0.0 0.5 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -87,7 +91,8 @@
             <UniformMass totalmass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.5 0.0 0.5 1.0" scale="0.3" />
+                <MeshObjLoader name="meshLoader4" filename="mesh/smCube27.obj" scale="0.3" />
+                <OglModel name="Visual" src="@meshLoader4" color="0.5 0.0 0.5 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -105,7 +110,8 @@
             <UniformMass totalmass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.9 0.0 0.2 1.0" scale="0.3" />
+                <MeshObjLoader name="meshLoader5" filename="mesh/smCube27.obj" scale="0.3" />
+                <OglModel name="Visual" src="@meshLoader5" color="0.9 0.0 0.2 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -125,7 +131,8 @@
             <Triangle simulated="0" moving="0" />
             <Line simulated="0" moving="0" />
             <Point simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/box_outside.obj" color="0 0.8 0.3 0.3" />
+            <MeshObjLoader name="meshLoader6" filename="mesh/box_outside.obj" />
+            <OglModel name="Visual" src="@meshLoader6" color="0 0.8 0.3 0.3" />
         </Node>
     </Node>
 </Node>

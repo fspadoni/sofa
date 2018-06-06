@@ -34,17 +34,20 @@
         </Node>
 
         <Node name="VisuBody" tags="Visual" >
-			<VisualModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
+			<MeshObjLoader name="meshLoader0" filename="mesh/snake_body.obj" />
+			<VisualModel  name="VisualBody" src="@meshLoader0"   />
 			<BarycentricMapping name="baryv0" input="@.." output="@VisualBody" />
         </Node>
 
         <Node name="VisuCornea" tags="Visual" >
-			<VisualModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
+			<MeshObjLoader name="meshLoader1" filename="mesh/snake_cornea.obj" />
+			<VisualModel  name="VisualCornea" src="@meshLoader1"   />
 			<BarycentricMapping name="baryv1" input="@.." output="@VisualCornea" />
         </Node>	
 		
         <Node name="VisuEye" tags="Visual" >
-			<VisualModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
+			<MeshObjLoader name="meshLoader2" filename="mesh/snake_yellowEye.obj" />
+			<VisualModel  name="VisualEye" src="@meshLoader2"   />
 			<BarycentricMapping name="baryv2" input="@.." output="@VisualEye" />
         </Node>				
     </Node>
@@ -72,7 +75,8 @@
 		</Node>		
 
         <Node name="Visu" tags="Visual" >
-            <VisualModel  name="VisualModel" fileMesh="mesh/SOFA_pod.obj" />
+            <MeshObjLoader name="meshLoader3" filename="mesh/SOFA_pod.obj" />
+            <VisualModel  name="VisualModel" src="@meshLoader3" />
         </Node>
     </Node>	
 </Node>

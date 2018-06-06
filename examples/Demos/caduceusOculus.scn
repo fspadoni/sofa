@@ -32,15 +32,18 @@
 			<BarycentricMapping template="Vec3d,Vec3d" name="barycentricMap1"  tags="Visu"  input="@.."  output="@." />
 		</Node>
 		<Node 	 name="VisuBody"  tags="Visual"  >
-			<OglModel template="ExtVec3f" name="VisualBody"  tags="Visu"  fileMesh="mesh/snake_body.obj"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<MeshObjLoader name="meshLoader0" filename="mesh/snake_body.obj" />
+			<OglModel template="ExtVec3f" name="VisualBody"  tags="Visu" src="@meshLoader0"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 			<BarycentricMapping template="Vec3d,ExtVec3f" name="barycentricMap2"  tags="Visu"  input="@.."  output="@VisualBody" />
 		</Node>
 		<Node 	 name="VisuCornea"  tags="Visual"  >
-			<OglModel template="ExtVec3f" name="VisualCornea"  tags="Visu"  fileMesh="mesh/snake_cornea.obj"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<MeshObjLoader name="meshLoader1" filename="mesh/snake_cornea.obj" />
+			<OglModel template="ExtVec3f" name="VisualCornea"  tags="Visu" src="@meshLoader1"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 			<BarycentricMapping template="Vec3d,ExtVec3f" name="barycentricMap3"  tags="Visu"  input="@.."  output="@VisualCornea" />
 		</Node>
 		<Node 	 name="VisuEye"  tags="Visual"  >
-			<OglModel template="ExtVec3f" name="VisualEye"  tags="Visu"  fileMesh="mesh/snake_yellowEye.obj"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<MeshObjLoader name="meshLoader2" filename="mesh/snake_yellowEye.obj" />
+			<OglModel template="ExtVec3f" name="VisualEye"  tags="Visu" src="@meshLoader2"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 			<BarycentricMapping template="Vec3d,ExtVec3f" name="barycentricMap4"  tags="Visu"  input="@.."  output="@VisualEye" />
 		</Node>
 	</Node>
@@ -69,7 +72,8 @@
 			<TPointModel template="Vec3d" name="tPointModel4"  moving="0"  simulated="0" />
 		</Node>
 		<Node 	 name="Visu"  tags="Visual"  >
-			<OglModel template="ExtVec3f" name="OglModel"  tags="Visu"  fileMesh="mesh/SOFA_pod.obj"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<MeshObjLoader name="meshLoader3" filename="mesh/SOFA_pod.obj" />
+			<OglModel template="ExtVec3f" name="OglModel"  tags="Visu" src="@meshLoader3"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 		</Node>
 	</Node>
 </Node>

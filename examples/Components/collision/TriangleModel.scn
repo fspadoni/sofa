@@ -13,7 +13,8 @@
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/smCube125.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="red" />
             <SubsetMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -33,6 +34,7 @@
         <Triangle name="FloorTriangle" simulated="0" moving="0" />
         <Line name="FloorLine" simulated="0" moving="0" />
         <Point name="FloorLine" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" dy="-10" scale="1.75" />
+        <MeshObjLoader name="meshLoader1" filename="mesh/floor3.obj" scale="1.75" />
+        <OglModel name="FloorV" src="@meshLoader1" texturename="textures/brushed_metal.bmp" dy="-10" />
     </Node>
 </Node>

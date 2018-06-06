@@ -12,7 +12,8 @@
     <Node name="CUBE_0">
         <MechanicalObject dy="2.5" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="1 0 0 1" dy="2.5" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/cube.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="1 0 0 1" dy="2.5" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
@@ -33,7 +34,8 @@
         <UniformMass totalmass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="1 1 0 1.0" />
+            <MeshObjLoader name="meshLoader1" filename="mesh/cube.obj" />
+            <OglModel name="Visual" src="@meshLoader1" color="1 1 0 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
@@ -58,7 +60,8 @@
         <UniformMass totalmass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 1 0 1.0" />
+            <MeshObjLoader name="meshLoader2" filename="mesh/cube.obj" />
+            <OglModel name="Visual" src="@meshLoader2" color="0 1 0 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
@@ -83,7 +86,8 @@
         <UniformMass totalmass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 1 1 1.0" />
+            <MeshObjLoader name="meshLoader3" filename="mesh/cube.obj" />
+            <OglModel name="Visual" src="@meshLoader3" color="0 1 1 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
@@ -108,7 +112,8 @@
         <UniformMass totalmass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 0 1 1.0" />
+            <MeshObjLoader name="meshLoader4" filename="mesh/cube.obj" />
+            <OglModel name="Visual" src="@meshLoader4" color="0 0 1 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">

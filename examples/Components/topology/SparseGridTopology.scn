@@ -15,7 +15,8 @@
         <MeshSpringForceField name="Springs" stiffness="500" damping="10" />
         <BoxConstraint box="10 -10 -6 12 10 6" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/dragon.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="yellow" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -34,7 +35,8 @@
         <MeshSpringForceField name="Springs" stiffness="500" damping="10" />
         <BoxConstraint box="10 -10 10 12 10 22" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
+            <MeshObjLoader name="meshLoader1" filename="mesh/dragon.obj" />
+            <OglModel name="Visual" src="@meshLoader1" color="yellow" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -53,7 +55,8 @@
         <MeshSpringForceField name="Springs" stiffness="500" damping="10" />
         <BoxConstraint box="10 -10 26 12 10 38" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
+            <MeshObjLoader name="meshLoader2" filename="mesh/dragon.obj" />
+            <OglModel name="Visual" src="@meshLoader2" color="yellow" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">

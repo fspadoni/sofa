@@ -17,7 +17,8 @@
     <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" plasticYieldThreshold="0.01" plasticMaxThreshold="0.025" plasticCreep="1"/>
     <PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
     <Node name="Visu">
-      <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" rotation="90 0 0"/>
+      <MeshObjLoader name="meshLoader0" filename="mesh/torus.obj" rotation="90 0 0" />
+      <OglModel name="Visual" src="@meshLoader0" color="red"/>
       <BarycentricMapping input="@.." output="@Visual" />
     </Node>
     <Node name="Surf2">
@@ -38,7 +39,8 @@
     <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" plasticYieldThreshold="0.005" plasticMaxThreshold="0.5" plasticCreep="1"/>
     <PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
     <Node name="Visu">
-      <OglModel name="Visual" fileMesh="mesh/torus.obj" color="blue" rotation="90 0 0" translation="-6 0 0"/>
+      <MeshObjLoader name="meshLoader1" filename="mesh/torus.obj" rotation="90 0 0" translation="-6 0 0" />
+      <OglModel name="Visual" src="@meshLoader1" color="blue"/>
       <BarycentricMapping input="@.." output="@Visual" />
     </Node>
     <Node name="Surf2">
@@ -59,7 +61,8 @@
     <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" plasticYieldThreshold="0.005" plasticMaxThreshold="0.5" plasticCreep=".1"/>
     <PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
     <Node name="Visu">
-      <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" rotation="90 0 0" translation="-12 0 0"/>
+      <MeshObjLoader name="meshLoader2" filename="mesh/torus.obj" rotation="90 0 0" translation="-12 0 0" />
+      <OglModel name="Visual" src="@meshLoader2" color="yellow"/>
       <BarycentricMapping input="@.." output="@Visual" />
     </Node>
     <Node name="Surf2">
@@ -79,7 +82,8 @@
     <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
     <PlaneForceField normal="0 1 0" d="-3" stiffness="100000" />
     <Node name="Visu">
-      <OglModel name="Visual" fileMesh="mesh/torus.obj" color="green" rotation="90 0 0" translation="6 0 0"/>
+      <MeshObjLoader name="meshLoader3" filename="mesh/torus.obj" rotation="90 0 0" translation="6 0 0" />
+      <OglModel name="Visual" src="@meshLoader3" color="green"/>
       <BarycentricMapping input="@.." output="@Visual" />
     </Node>
     <Node name="Surf2">

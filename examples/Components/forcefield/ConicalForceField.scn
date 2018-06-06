@@ -15,7 +15,8 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <ConicalForceField template="Vec3f" coneCenter="0.0 -10.0 0.0" coneHeight="0 20 0" coneAngle="40" />
         <Node name="Visu">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/liver-smooth.obj" />
+            <OglModel name="VisualModel" src="@meshLoader0" color="red" />
             <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">

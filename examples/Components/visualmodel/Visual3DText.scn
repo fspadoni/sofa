@@ -3,5 +3,6 @@
 	<VisualStyle displayFlags="showVisualModels"/>
         <Visual3DText text="hello world!" position="1 1 1" color="red" scale="2" depthTest="false"/>
         
-        <VisualModel fileMesh="mesh/dragon.obj"/>
+        <MeshObjLoader name="meshLoader0" filename="mesh/dragon.obj" />
+ src="@meshLoader0"/>
 </Node>

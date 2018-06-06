@@ -11,18 +11,21 @@ Visual Anatomy
 
 	<Node name="Head Visual Model" >
 	    <VisualStyle displayFlags="showVisualModels " /> 
- 	    <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
+ 	    <MeshObjLoader name="meshLoader0" filename="data/mesh/head.obj" />
+ 	    <OglModel name="HeadVisualModel" src="@meshLoader0" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
 	</Node>
 
         <Node name="Tongue" activated="true">
             <Node name="TongueVisualModel">
-                <OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
+                <MeshObjLoader name="meshLoader1" filename="data/mesh/tongue.obj" />
+                <OglModel name="TongueVisualModel" src="@meshLoader1" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
             </Node>
         </Node>
 
         <Node name="Teeth" >
             <Node name="VisualModel">
-                <OglModel name="TeethVisualModel" fileMesh="data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
+                <MeshObjLoader name="meshLoader2" filename="data/mesh/teeth.obj" />
+                <OglModel name="TeethVisualModel" src="@meshLoader2" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
             </Node>
         </Node>
     </Node>

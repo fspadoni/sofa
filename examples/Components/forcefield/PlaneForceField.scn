@@ -13,7 +13,8 @@
         <RegularGridSpringForceField name="Springs" stiffness="1000" />
         <PlaneForceField normal="0 1 0" d="-10" stiffness="100000" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="blue" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/smCube125.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collis">

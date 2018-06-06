@@ -12,7 +12,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -31,7 +32,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader1" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader1" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -50,7 +52,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader2" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader2" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -69,7 +72,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader3" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader3" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -88,7 +92,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader4" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader4" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -107,7 +112,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader5" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader5" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -126,7 +132,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader6" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader6" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -145,7 +152,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader7" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader7" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -164,7 +172,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader8" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader8" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -183,7 +192,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader9" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader9" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -199,6 +209,7 @@
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="0.5" />
         <TriangleOctree name="Floor" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" color="lightgray" dy="-10" />
+        <MeshObjLoader name="meshLoader10" filename="mesh/floor2b.obj" scale="0.5" />
+        <OglModel name="FloorV" src="@meshLoader10" texturename="textures/floor.bmp" color="lightgray" dy="-10" />
     </Node>
 </Node>

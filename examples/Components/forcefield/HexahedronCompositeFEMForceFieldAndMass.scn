@@ -5,7 +5,8 @@
 	  permits to have a good interpolation of the inside bead behaviors.-->
     <VisualStyle displayFlags="showVisual showForceFields" />
     <Node name="plane">
-        <OglModel name="plan" fileMesh="mesh/plane_loop_2.obj" rx="90" rz="90" scale=".2" dy="-2.01" material="Default Diffuse 1 1 0.4 0.4 1 Ambient 1 0.8 0.8 0.8 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
+        <MeshObjLoader name="meshLoader0" filename="mesh/plane_loop_2.obj" scale=".2" />
+        <OglModel name="plan" src="@meshLoader0" rx="90" rz="90" dy="-2.01" material="Default Diffuse 1 1 0.4 0.4 1 Ambient 1 0.8 0.8 0.8 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
     </Node>
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
@@ -26,16 +27,19 @@
             <HexahedronCompositeFEMMapping />
             <Triangle />
             <Node name="Soft gelatin">
-                <OglModel name="VisualBody" fileMesh="mesh/bubille_out.obj" normals="0" color="0.1 .8 .3 .6" />
+                <MeshObjLoader name="meshLoader1" filename="mesh/bubille_out.obj" />
+                <OglModel name="VisualBody" src="@meshLoader1" normals="0" color="0.1 .8 .3 .6" />
                 <IdentityMapping input="@.." output="@VisualBody" />
             </Node>
         </Node>
         <Node name="soft bead">
-            <OglModel name="VisualBody1" fileMesh="mesh/bubille_in1.obj" normals="0" color="1 0 0 1" />
+            <MeshObjLoader name="meshLoader2" filename="mesh/bubille_in1.obj" />
+            <OglModel name="VisualBody1" src="@meshLoader2" normals="0" color="1 0 0 1" />
             <HexahedronCompositeFEMMapping input="@.." output="@VisualBody1" />
         </Node>
         <Node name="stiff bead">
-            <OglModel name="VisualBody2" fileMesh="mesh/bubille_in2.obj" normals="0" color="0 0 1 1" />
+            <MeshObjLoader name="meshLoader3" filename="mesh/bubille_in2.obj" />
+            <OglModel name="VisualBody2" src="@meshLoader3" normals="0" color="0 0 1 1" />
             <HexahedronCompositeFEMMapping input="@.." output="@VisualBody2" />
         </Node>
     </Node>

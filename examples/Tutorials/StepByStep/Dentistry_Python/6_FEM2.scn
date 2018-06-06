@@ -36,7 +36,8 @@ FEM force field of the tongue
 
             <Node name="TongueVisualModel">
             <VisualStyle displayFlags="showWireframe" /> 
-                <OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
+                <MeshObjLoader name="meshLoader0" filename="data/mesh/tongue.obj" />
+                <OglModel name="TongueVisualModel" src="@meshLoader0" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
                 <BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@TongueVisualModel" />
             </Node>
             <Node name="TongueCollisionModel">
@@ -72,7 +73,8 @@ FEM force field of the tongue
         <UniformMass name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
-            <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" />
+            <MeshObjLoader name="meshLoader1" filename="data/mesh/dental_instrument.obj" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader1" color="0.8 0.8 0.8 1.0" />
             <RigidMapping name="MM-VM mapping" input="@../instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel">

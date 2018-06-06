@@ -13,7 +13,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -35,7 +36,8 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/torus2_scale3.obj" color="blue" />
+            <MeshObjLoader name="meshLoader1" filename="mesh/torus2_scale3.obj" />
+            <OglModel name="Visual" src="@meshLoader1" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
@@ -55,7 +57,8 @@
         <Triangle name="Floor" simulated="0" moving="0" />
         <Line name="Floor" simulated="0" moving="0" />
         <Point name="Floor" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" rx="180" dy="30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />
+        <MeshObjLoader name="meshLoader2" filename="mesh/floor2b.obj" scale="0.5" />
+        <OglModel name="FloorV" src="@meshLoader2" texturename="textures/floor.bmp" rx="180" dy="30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />
     </Node>
     <Node name="Floor">
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
@@ -64,6 +67,7 @@
         <Triangle name="Floor" simulated="0" moving="0" />
         <Line name="Floor" simulated="0" moving="0" />
         <Point name="Floor" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" dy="-30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />/
+        <MeshObjLoader name="meshLoader3" filename="mesh/floor2b.obj" scale="0.5" />
+        <OglModel name="FloorV" src="@meshLoader3" texturename="textures/floor.bmp" dy="-30" material="Default &#x0A;&#x09;&#x09;&#x09;&#x09;  Diffuse 1      0.75 0.75 0.75 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Ambient 1      0.2 0.2 0.2 0.4 &#x0A;&#x09;&#x09;&#x09;&#x09;  Specular 0     1 1 1 1 &#x0A;&#x09;&#x09;&#x09;&#x09;  Emissive 0     0 0 0 0 &#x0A;&#x09;&#x09;&#x09;&#x09;  Shininess 0    45" />/
     </Node>
 </Node>

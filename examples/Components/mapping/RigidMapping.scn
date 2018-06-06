@@ -11,7 +11,8 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" />
             <Triangle contactStiffness="1000" simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" texturename="textures/brushed_metal.bmp" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/torus2.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="gray" texturename="textures/brushed_metal.bmp" />
         </Node>
         <Node name="TorusRigid">
             <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -19,7 +20,8 @@
             <MechanicalObject template="Rigid" dx="2.5" />
             <UniformMass filename="BehaviorModels/torus.rigid" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" texturename="textures/brushed_metal.bmp" />
+                <MeshObjLoader name="meshLoader1" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader1" color="gray" texturename="textures/brushed_metal.bmp" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -36,7 +38,8 @@
             <MechanicalObject template="Rigid" dx="5" />
             <UniformMass />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" texturename="textures/brushed_metal.bmp" />
+                <MeshObjLoader name="meshLoader2" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader2" color="gray" texturename="textures/brushed_metal.bmp" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -53,7 +56,8 @@
             <MechanicalObject template="Rigid" dx="7.5" />
             <UniformMass />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" texturename="textures/brushed_metal.bmp" />
+                <MeshObjLoader name="meshLoader3" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader3" color="gray" texturename="textures/brushed_metal.bmp" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -70,7 +74,8 @@
             <MechanicalObject template="Rigid" dx="10" />
             <UniformMass />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" texturename="textures/brushed_metal.bmp" />
+                <MeshObjLoader name="meshLoader4" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader4" color="gray" texturename="textures/brushed_metal.bmp" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">

@@ -8,7 +8,8 @@
         <RegularGrid nx="2" ny="2" nz="2" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <RegularGridSpringForceField name="Springs" stiffness="5000" damping="1" />
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="blue" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/smCube125.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <WashingMachineForceField size="50 50 50" center="0 0 0" speed="0.006" />

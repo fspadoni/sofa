@@ -14,7 +14,8 @@
             <Triangle simulated="0" moving="0" />
             <Line simulated="0" moving="0" />
             <Point simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/torus2.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="gray" />
         </Node>
         <Node name="TorusFEM">
             <EulerImplicit rayleighStiffness="0.01"  rayleighMass="0.1" />
@@ -25,7 +26,8 @@
             <UniformMass mass="0.1" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="2.5" />
+                <MeshObjLoader name="meshLoader1" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader1" color="red" dx="2.5" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -47,7 +49,8 @@
             <UniformMass totalmass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="5" color="green" />
+                <MeshObjLoader name="meshLoader2" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader2" dx="5" color="green" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -68,7 +71,8 @@
             <RegularGrid nx="6" ny="2" nz="5" xmin="-2.5" xmax="2.5" ymin="-0.5" ymax="0.5" zmin="-2" zmax="2" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" />
+                <MeshObjLoader name="meshLoader3" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader3" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -87,7 +91,8 @@
             <MechanicalObject template="Rigid" dx="10" />
             <UniformMass filename="BehaviorModels/torus2.rigid" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+                <MeshObjLoader name="meshLoader4" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader4" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -109,7 +114,8 @@
             <Triangle simulated="0" moving="0" />
             <Line simulated="0" moving="0" />
             <Point simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" dz="6" />
+            <MeshObjLoader name="meshLoader5" filename="mesh/torus2.obj" />
+            <OglModel name="Visual" src="@meshLoader5" color="gray" dz="6" />
         </Node>
         <Node name="TorusFEM">
             <EulerImplicit rayleighStiffness="0.01" />
@@ -120,7 +126,8 @@
             <UniformMass totalmass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="2.5" dz="6" />
+                <MeshObjLoader name="meshLoader6" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader6" color="red" dx="2.5" dz="6" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -142,7 +149,8 @@
             <UniformMass totalmass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="red" dx="5" dz="6" />
+                <MeshObjLoader name="meshLoader7" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader7" color="red" dx="5" dz="6" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -164,7 +172,8 @@
             <UniformMass totalmass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="7.5" dz="6" />
+                <MeshObjLoader name="meshLoader8" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader8" color="red" dx="7.5" dz="6" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -186,7 +195,8 @@
             <UniformMass totalmass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="red" dx="10" dz="6" />
+                <MeshObjLoader name="meshLoader9" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader9" color="red" dx="10" dz="6" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -208,7 +218,8 @@
             <Triangle simulated="0" moving="0" />
             <Line simulated="0" moving="0" />
             <Point simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" dz="12" color="gray" />
+            <MeshObjLoader name="meshLoader10" filename="mesh/torus2.obj" />
+            <OglModel name="Visual" src="@meshLoader10" dz="12" color="gray" />
         </Node>
         <Node name="TorusSpring">
             <EulerImplicit rayleighStiffness="0.01" />
@@ -219,7 +230,8 @@
             <UniformMass totalmass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="2.5" dz="12" color="green" />
+                <MeshObjLoader name="meshLoader11" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader11" dx="2.5" dz="12" color="green" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -241,7 +253,8 @@
             <UniformMass totalmass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="5" dz="12" color="green" />
+                <MeshObjLoader name="meshLoader12" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader12" dx="5" dz="12" color="green" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -263,7 +276,8 @@
             <UniformMass totalmass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="7.5" dz="12" color="green" />
+                <MeshObjLoader name="meshLoader13" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader13" dx="7.5" dz="12" color="green" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -285,7 +299,8 @@
             <UniformMass totalmass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="10" dz="12" color="green" />
+                <MeshObjLoader name="meshLoader14" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader14" dx="10" dz="12" color="green" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -307,7 +322,8 @@
             <Triangle simulated="0" moving="0" />
             <Line simulated="0" moving="0" />
             <Point simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" dz="18" color="gray" />
+            <MeshObjLoader name="meshLoader15" filename="mesh/torus2.obj" />
+            <OglModel name="Visual" src="@meshLoader15" dz="18" color="gray" />
         </Node>
         <Node name="TorusFFD">
             <EulerImplicit rayleighStiffness="0.01" />
@@ -317,7 +333,8 @@
             <RegularGrid nx="6" ny="2" nz="5" xmin="-2.5" xmax="2.5" ymin="-0.5" ymax="0.5" zmin="-2" zmax="2" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" />
+                <MeshObjLoader name="meshLoader16" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader16" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -338,7 +355,8 @@
             <RegularGrid nx="6" ny="5" nz="2" xmin="-2.5" xmax="2.5" ymin="-2" ymax="2" zmin="-0.5" zmax="0.5" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="yellow" />
+                <MeshObjLoader name="meshLoader17" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader17" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -359,7 +377,8 @@
             <RegularGrid nx="6" ny="2" nz="5" xmin="-2.5" xmax="2.5" ymin="-0.5" ymax="0.5" zmin="-2" zmax="2" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" />
+                <MeshObjLoader name="meshLoader18" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader18" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -380,7 +399,8 @@
             <RegularGrid nx="6" ny="5" nz="2" xmin="-2.5" xmax="2.5" ymin="-2" ymax="2" zmin="-0.5" zmax="0.5" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="yellow" />
+                <MeshObjLoader name="meshLoader19" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader19" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -402,7 +422,8 @@
             <Triangle simulated="0" moving="0" />
             <Line simulated="0" moving="0" />
             <Point simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" dz="24" color="gray" />
+            <MeshObjLoader name="meshLoader20" filename="mesh/torus2.obj" />
+            <OglModel name="Visual" src="@meshLoader20" dz="24" color="gray" />
         </Node>
         <Node name="TorusRigid">
             <EulerImplicit rayleighStiffness="0" />
@@ -410,7 +431,8 @@
             <MechanicalObject template="Rigid" dx="2.5" dz="24" />
             <UniformMass filename="BehaviorModels/torus.rigid" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
+                <MeshObjLoader name="meshLoader21" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader21" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -429,7 +451,8 @@
             <MechanicalObject template="Rigid" dx="5" dz="24" />
             <UniformMass filename="BehaviorModels/torus2.rigid" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+                <MeshObjLoader name="meshLoader22" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader22" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -448,7 +471,8 @@
             <MechanicalObject template="Rigid" dx="7.5" dz="24" />
             <UniformMass filename="BehaviorModels/torus.rigid" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
+                <MeshObjLoader name="meshLoader23" filename="mesh/torus.obj" />
+                <OglModel name="Visual" src="@meshLoader23" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
@@ -467,7 +491,8 @@
             <MechanicalObject template="Rigid" dx="10" dz="24" />
             <UniformMass filename="BehaviorModels/torus2.rigid" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+                <MeshObjLoader name="meshLoader24" filename="mesh/torus2.obj" />
+                <OglModel name="Visual" src="@meshLoader24" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">

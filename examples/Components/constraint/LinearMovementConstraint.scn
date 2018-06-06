@@ -17,7 +17,8 @@
             <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/liver.obj" color="red" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/liver.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="red" />
             <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -38,7 +39,8 @@
             <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/liver.obj" color="green" />
+            <MeshObjLoader name="meshLoader1" filename="mesh/liver.obj" />
+            <OglModel name="Visual" src="@meshLoader1" color="green" />
             <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual"/>
         </Node>
     </Node>
@@ -59,7 +61,8 @@
             <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
-            <OglModel name="Visual" fileMesh="mesh/liver.obj" color="blue" />
+            <MeshObjLoader name="meshLoader2" filename="mesh/liver.obj" />
+            <OglModel name="Visual" src="@meshLoader2" color="blue" />
             <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>

@@ -12,7 +12,8 @@
         <UniformMass name="mass" totalmass="1" showAxisSizeFactor="0.1" />
         <ParabolicConstraint name="parabol" indices="0" P1="1 0 0" P2="5 3 1" P3="7 6 -5" BeginTime="0.5" EndTime="1.5" />
         <Node name="Visu">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/liver-smooth.obj" />
+            <OglModel name="VisualModel" src="@meshLoader0" color="red" />
             <RigidMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">
@@ -27,6 +28,7 @@
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" scale="20" dz="-35" />
         <Triangle simulated="0" moving="0" />
-        <OglModel name="Visual" fileMesh="mesh/cube.obj" color="gray" scale="20" dz="-35" />
+        <MeshObjLoader name="meshLoader1" filename="mesh/cube.obj" scale="20" />
+        <OglModel name="Visual" src="@meshLoader1" color="gray" dz="-35" />
     </Node>
 </Node>

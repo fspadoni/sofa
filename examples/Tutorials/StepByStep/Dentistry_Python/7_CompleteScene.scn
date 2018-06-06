@@ -20,7 +20,8 @@ An assemblage of all the previous steps altogether
     <Node name="Head">
 	<Node name="Head Visual Model" activated="true">
 	    <VisualStyle displayFlags="showVisualModels showWireframe" /> 
-	    <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
+	    <MeshObjLoader name="meshLoader0" filename="data/mesh/head.obj" />
+	    <OglModel name="HeadVisualModel" src="@meshLoader0" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
 	</Node>
         <Node name="Tongue" activated="true">
             <EulerImplicit name="odesolver" vdamping="4.0"/>
@@ -38,7 +39,8 @@ An assemblage of all the previous steps altogether
             <FixedConstraint template="Vec3d" indices="@ROI.indices"/>   
 
             <Node name="TongueVisualModel">
-                <OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
+                <MeshObjLoader name="meshLoader1" filename="data/mesh/tongue.obj" />
+                <OglModel name="TongueVisualModel" src="@meshLoader1" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
                 <BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@TongueVisualModel" />
             </Node>
             <Node name="TongueCollisionModel">
@@ -64,7 +66,8 @@ An assemblage of all the previous steps altogether
                 <Point name="tooth" contactStiffness="5" simulated="0" moving="0" />
             </Node>
             <Node name="VisualModel">
-                <OglModel name="TeethVisualModel" fileMesh="data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
+                <MeshObjLoader name="meshLoader2" filename="data/mesh/teeth.obj" />
+                <OglModel name="TeethVisualModel" src="@meshLoader2" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
             </Node>
         </Node>
     </Node>
@@ -87,7 +90,8 @@ An assemblage of all the previous steps altogether
         <UniformMass name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
-            <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" />
+            <MeshObjLoader name="meshLoader3" filename="data/mesh/dental_instrument.obj" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader3" color="0.8 0.8 0.8 1.0" />
             <RigidMapping name="MM-VM mapping" input="@../instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel">

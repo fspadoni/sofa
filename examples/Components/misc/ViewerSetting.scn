@@ -39,17 +39,20 @@
         </Node>
 
         <Node name="VisuBody" tags="Visual" >
-                        <OglModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
+                        <MeshObjLoader name="meshLoader0" filename="mesh/snake_body.obj" />
+                        <OglModel  name="VisualBody" src="@meshLoader0"   />
 			<BarycentricMapping input="@.." output="@VisualBody" />
         </Node>
 
         <Node name="VisuCornea" tags="Visual" >
-                        <OglModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
+                        <MeshObjLoader name="meshLoader1" filename="mesh/snake_cornea.obj" />
+                        <OglModel  name="VisualCornea" src="@meshLoader1"   />
 			<BarycentricMapping input="@.." output="@VisualCornea" />
         </Node>
 
         <Node name="VisuEye" tags="Visual" >
-                        <OglModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
+                        <MeshObjLoader name="meshLoader2" filename="mesh/snake_yellowEye.obj" />
+                        <OglModel  name="VisualEye" src="@meshLoader2"   />
 			<BarycentricMapping input="@.." output="@VisualEye" />
         </Node>
     </Node>
@@ -82,7 +85,8 @@
 		</Node>
 
         <Node name="Visu" tags="Visual" >
-            <OglModel  name="OglModel" fileMesh="mesh/SOFA_pod.obj" />
+            <MeshObjLoader name="meshLoader3" filename="mesh/SOFA_pod.obj" />
+            <OglModel  name="OglModel" src="@meshLoader3" />
         </Node>
     </Node>
 </Node>

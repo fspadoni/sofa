@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.01">
 
-	<OglModel name="VisualModel" fileMesh="data/mesh/add_repo_cube.obj" />
+	<MeshObjLoader name="meshLoader0" filename="data/mesh/add_repo_cube.obj" />
+	<OglModel name="VisualModel" src="@meshLoader0" />
 
 	<AddResourceRepository path="./data/mesh" />
-    <OglModel name="VisualModel" fileMesh="add_repo_cube.obj" translation="5 0 0"/>
+    <MeshObjLoader name="meshLoader1" filename="add_repo_cube.obj" translation="5 0 0" />
+    <OglModel name="VisualModel" src="@meshLoader1"/>
   
 </Node>

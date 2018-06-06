@@ -2,12 +2,15 @@
     <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
     <Gravity name="G" gravity="0.0 -9.81 0" />
     <Node name="Head">
-        <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
+        <MeshObjLoader name="meshLoader0" filename="data/mesh/head.obj" />
+        <OglModel name="HeadVisualModel" src="@meshLoader0" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
         <Node name="Tongue">
-            <OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
+            <MeshObjLoader name="meshLoader1" filename="data/mesh/tongue.obj" />
+            <OglModel name="TongueVisualModel" src="@meshLoader1" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
         </Node>
         <Node name="Teeth">
-            <OglModel name="TeethVisualModel" fileMesh="data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
+            <MeshObjLoader name="meshLoader2" filename="data/mesh/teeth.obj" />
+            <OglModel name="TeethVisualModel" src="@meshLoader2" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
         </Node>
     </Node>
     <Node name="Instrument">
@@ -16,7 +19,8 @@
         <MechanicalObject name="instrumentState" template="Rigid" />
         <UniformMass name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <Node name="VisualModel">
-            <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" dz="-10" />
+            <MeshObjLoader name="meshLoader3" filename="data/mesh/dental_instrument.obj" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader3" color="0.8 0.8 0.8 1.0" dz="-10" />
             <RigidMapping name="MM-&gt;VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
         </Node>
     </Node>

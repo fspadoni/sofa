@@ -34,6 +34,8 @@
             </Node>
         </Node>
     </Node>
-    <OglModel name="bottom" fileMesh="mesh/cube.obj" color="0.0 1.0 0.0 0.5" scale3d="1 1 0.001" translation="0 0 -0.5" />
-    <OglModel name="fluidSurface" fileMesh="mesh/cube.obj" color="0.0 0.0 1.0 0.5" scale3d="1 1 0.001" translation="0 0 0" />
+    <MeshObjLoader name="meshLoader0" filename="mesh/cube.obj" scale3d="1 1 0.001" translation="0 0 -0.5" />
+    <OglModel name="bottom" src="@meshLoader0" color="0.0 1.0 0.0 0.5" />
+    <MeshObjLoader name="meshLoader1" filename="mesh/cube.obj" scale3d="1 1 0.001" translation="0 0 0" />
+    <OglModel name="fluidSurface" src="@meshLoader1" color="0.0 0.0 1.0 0.5" />
 </Node>

@@ -24,7 +24,8 @@
         <Triangle />
         <RigidMapping template="Rigid,Vec3d" index="0" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear0.obj" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/gear0.obj" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader0" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -35,7 +36,8 @@
         <Triangle />
         <RigidMapping template="Rigid,Vec3d" index="1" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear1.obj" />
+            <MeshObjLoader name="meshLoader1" filename="mesh/gear1.obj" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader1" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -46,7 +48,8 @@
         <Triangle />
         <RigidMapping template="Rigid,Vec3d" index="2" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear2.obj" />
+            <MeshObjLoader name="meshLoader2" filename="mesh/gear2.obj" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader2" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -57,7 +60,8 @@
         <Triangle />
         <RigidMapping template="Rigid,Vec3d" index="3" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear3.obj" />
+            <MeshObjLoader name="meshLoader3" filename="mesh/gear3.obj" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader3" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -68,7 +72,8 @@
         <Triangle />
         <RigidMapping template="Rigid,Vec3d" index="4" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gearsupport.obj" material="Default Diffuse 1 1 1 0.8 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <MeshObjLoader name="meshLoader4" filename="mesh/gearsupport.obj" />
+            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader4" material="Default Diffuse 1 1 1 0.8 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>

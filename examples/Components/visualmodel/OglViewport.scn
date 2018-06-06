@@ -20,7 +20,8 @@
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual">
             <!-- Using material contained in liver-smooth.obj -->
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/liver-smooth.obj" />
+            <OglModel name="VisualModel" src="@meshLoader0" />
             <BarycentricMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">

@@ -16,7 +16,8 @@
             <Triangle simulated="0" moving="0" />
             <Line simulated="0" moving="0" />
             <Point simulated="0" moving="0" />
-            <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
+            <MeshObjLoader name="meshLoader0" filename="mesh/torus2.obj" />
+            <OglModel name="Visual" src="@meshLoader0" color="gray" />
         </Node>
         <Node name="TorusRigid">
             <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -47,7 +48,8 @@
                     <BarycentricMapping />
                 </Node>
                 <Node name="Visu">
-                    <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
+                    <MeshObjLoader name="meshLoader1" filename="mesh/torus.obj" />
+                    <OglModel name="Visual" src="@meshLoader1" color="gray" />
                     <BarycentricMapping input="@.." output="@Visual" />
                 </Node>
             </Node>

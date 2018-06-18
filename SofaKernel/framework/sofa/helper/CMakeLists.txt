@@ -57,9 +57,6 @@ set(HEADER_FILES
     io/MassSpringLoader.h
     io/Mesh.h
     io/MeshOBJ.h
-    io/MeshGmsh.h
-    io/MeshXsp.h    
-    io/MeshSTL.h
     io/MeshTopologyLoader.h
     io/SphereLoader.h
     io/TriangleLoader.h
@@ -161,9 +158,6 @@ set(SOURCE_FILES
     io/MassSpringLoader.cpp
     io/Mesh.cpp
     io/MeshOBJ.cpp
-    io/MeshGmsh.cpp
-    io/MeshXsp.cpp
-    io/MeshSTL.cpp
     io/MeshTopologyLoader.cpp
     io/SphereLoader.cpp
     io/TriangleLoader.cpp

@@ -24,7 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include <fstream>
-#include <sofa/helper/io/Mesh.h>
 
 
 namespace sofa
@@ -76,7 +75,7 @@ bool MeshGmshLoader::load()
 
         if (endMesh != string("$EndMeshFormat") ) // it should end with $EndMeshFormat
         {
-            serr << "Closing File" << sendl;
+            msg_error() << "Closing File";
             file.close();
             return false;
         }
@@ -96,17 +95,12 @@ bool MeshGmshLoader::load()
     // -- Reading file
     if (node == "$NOD" || node == "$Nodes") // Gmsh format
     {
-        // TODO 2018-04-06: temporary change to unify loader API
-        //fileRead = readGmsh(file, gmshFormat);
+        fileRead = readGmsh(file, gmshFormat);
         file.close();
-        helper::io::Mesh* _mesh = helper::io::Mesh::Create("gmsh", filename);
-
-        copyMeshToData(_mesh);
-        delete _mesh;
     }
     else //if it enter this "else", it means there is a problem before in the factory or in canLoad()
     {
-        serr << "Error: MeshGmshLoader: File '" << m_filename << "' finally appears not to be a Gmsh file." << sendl;
+        msg_error() << "Error: MeshGmshLoader: File '" << m_filename << "' finally appears not to be a Gmsh file.";
         file.close();
         return false;
     }
@@ -139,7 +133,7 @@ void MeshGmshLoader::normalizeGroup(helper::vector< sofa::core::loader::Primitiv
 
 bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
 {
-    sout << "Reading Gmsh file: " << gmshFormat << sendl;
+	dmsg_info() << "Reading Gmsh file: " << gmshFormat;
 
     string cmd;
 
@@ -176,7 +170,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     file >> cmd;
     if (cmd != "$ENDNOD" && cmd != "$EndNodes")
     {
-        serr << "Error: MeshGmshLoader: '$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'" << sendl;
+        msg_error() << "Error: MeshGmshLoader: '$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
         file.close();
         return false;
     }
@@ -186,7 +180,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     file >> cmd;
     if (cmd != "$ELM" && cmd != "$Elements")
     {
-        serr << "Error: MeshGmshLoader: '$ELM' or '$Elements' expected, found '" << cmd << "'" << sendl;
+        msg_error() << "Error: MeshGmshLoader: '$ELM' or '$Elements' expected, found '" << cmd << "'";
         file.close();
         return false;
     }
@@ -258,7 +252,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 nnodes = 10;
                 break;
             default:
-                serr << "Error: MeshGmshLoader: Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." << sendl;
+                msg_error() << "Error: MeshGmshLoader: Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found.";
                 nnodes = 0;
             }
         }
@@ -275,7 +269,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             int t = 0;
             file >> t;
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
-            //sout << "nodes[" << n << "] = " << nodes[n] << sendl;
         }
 
         switch (etype)
@@ -392,19 +385,10 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     file >> cmd;
     if (cmd != "$ENDELM" && cmd!="$EndElements")
     {
-        serr << "Error: MeshGmshLoader: '$ENDELM' or '$EndElements' expected, found '" << cmd << "'" << sendl;
+        msg_error() << "Error: MeshGmshLoader: '$ENDELM' or '$EndElements' expected, found '" << cmd << "'";
         file.close();
         return false;
     }
-
-    // sout << "Loading topology complete:";
-    // if (npoints>0) sout << ' ' << npoints << " points";
-    // if (nlines>0)  sout << ' ' << nlines  << " lines";
-    // if (ntris>0)   sout << ' ' << ntris   << " triangles";
-    // if (nquads>0)  sout << ' ' << nquads  << " quads";
-    // if (ntetrahedra>0) sout << ' ' << ntetrahedra << " tetrahedra";
-    // if (ncubes>0)  sout << ' ' << ncubes  << " cubes";
-    // sout << sendl;
 
     file.close();
     return true;

@@ -36,7 +36,7 @@
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/SVector.h>
-
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {

@@ -27,6 +27,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 

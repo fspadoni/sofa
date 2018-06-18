@@ -26,9 +26,6 @@
 #include <sofa/core/topology/BaseTopologyEngine.h>
 
 
-#include <sofa/core/objectmodel/DataFileName.h>
-
-
 namespace sofa
 {
 
@@ -93,12 +90,6 @@ protected:
     BaseMeshTopology()	;
 public:
     virtual void init() override;
-
-    /// Load the topology from a file.
-    ///
-    /// The default implementation supports the following formats: obj, gmsh, mesh (custom simple text file), xs3 (deprecated description of mass-springs networks).
-    virtual bool load(const char* filename);
-    virtual std::string getFilename() const {return fileTopology.getValue();}
 
     // defined in Topology
     //virtual int getNbPoints() const = 0;
@@ -322,10 +313,6 @@ public:
     virtual const sofa::helper::vector <EdgeID>& getEdgesOnBorder();
 
     virtual const sofa::helper::vector <PointID>& getPointsOnBorder();
-
-protected:
-
-    sofa::core::objectmodel::DataFileName fileTopology;
 
 
 public:

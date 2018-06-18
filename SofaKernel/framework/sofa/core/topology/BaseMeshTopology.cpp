@@ -20,8 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/io/MeshTopologyLoader.h>
-#include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
@@ -38,9 +36,8 @@ using helper::vector;
 using helper::fixed_array;
 
 BaseMeshTopology::BaseMeshTopology()
-    : fileTopology(initData(&fileTopology,"fileTopology","Filename of the mesh"))
 {
-    addAlias(&fileTopology,"filename");
+
 }
 
 /// Returns the set of edges adjacent to a given vertex.
@@ -257,60 +254,7 @@ const sofa::helper::vector <BaseMeshTopology::PointID>& BaseMeshTopology::getPoi
 
 void BaseMeshTopology::init()
 {
-    if (!fileTopology.getValue().empty())
-    {
-        this->load(fileTopology.getFullPath().c_str());
-    }
-}
 
-class DefaultMeshTopologyLoader : public helper::io::MeshTopologyLoader
-{
-public:
-    BaseMeshTopology* dest;
-    DefaultMeshTopologyLoader(BaseMeshTopology* dest) : dest(dest) {}
-    virtual void addPoint(SReal px, SReal py, SReal pz)
-    {
-        dest->addPoint(px,py,pz);
-    }
-    virtual void addLine(int p1, int p2)
-    {
-        dest->addEdge(p1,p2);
-    }
-    virtual void addTriangle(int p1, int p2, int p3)
-    {
-        dest->addTriangle(p1,p2,p3);
-    }
-    virtual void addQuad(int p1, int p2, int p3, int p4)
-    {
-        dest->addQuad(p1,p2,p3,p4);
-    }
-    virtual void addTetra(int p1, int p2, int p3, int p4)
-    {
-        dest->addTetra(p1,p2,p3,p4);
-    }
-    virtual void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
-    {
-        dest->addHexa(p1,p2,p3,p4,p5,p6,p7,p8);
-    }
-};
-
-bool BaseMeshTopology::load(const char* filename)
-{
-    clear();
-    std::string meshFilename(filename);
-    if (!sofa::helper::system::DataRepository.findFile (meshFilename))
-    {
-        serr << "Mesh \""<< filename <<"\" not found"<< sendl;
-        return false;
-    }
-    this->fileTopology.setValue( filename );
-    DefaultMeshTopologyLoader loader(this);
-    if (!loader.load(meshFilename.c_str()))
-    {
-        serr << "Unable to load Mesh \""<<filename << "\"" << sendl;
-        return false;
-    }
-    return true;
 }
 
 // for procedural creation

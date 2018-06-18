@@ -93,115 +93,115 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
     for( unsigned i=0; i<_connexions.size(); ++i)
         _connexions[i].push_back( new Connexion() ); // at the finest level, each hexa corresponds exatly to one connexion
 
-    helper::io::Mesh* mesh = NULL;
+    //helper::io::Mesh* mesh = NULL;
 
-    // Finest level is asked
-    if (_finestConnectivity.getValue())
-    {
-        std::string filename = this->fileTopology.getValue();
-        if (!filename.empty()) // file given, try to load it.
-        {
-            mesh = helper::io::Mesh::Create(filename.c_str());
-            if (!mesh)
-            {
-                serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel Can't create mesh from file=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
-                return;
-            }
-        }
-        if(filename.empty() && vertices.getValue().empty()) // No vertices buffer set, nor mesh file => impossible to create mesh
-        {
-            serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
-            return;
-        }
-        else if(filename.empty() && !vertices.getValue().empty()) // no file given but vertex buffer. We can rebuild the mesh
-        {
-            mesh = new helper::io::Mesh();
-            for (unsigned int i = 0; i<vertices.getValue().size(); ++i)
-                mesh->getVertices().push_back(vertices.getValue()[i]);
-            const helper::vector < helper::vector <int> >& facets = this->facets.getValue();
-            const SeqTriangles& triangles = this->input_triangles.getValue();
-            const SeqQuads& quads = this->input_quads.getValue();
-            mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
-            for (unsigned int i = 0; i<facets.size(); ++i)
-                mesh->getFacets()[i].push_back(facets[i]);
-            for (unsigned int i0 = facets.size(), i = 0; i<triangles.size(); ++i)
-            {
-                mesh->getFacets()[i0 + i].resize(1);
-                mesh->getFacets()[i0 + i][0].resize(3);
-                mesh->getFacets()[i0 + i][0][0] = triangles[i][0];
-                mesh->getFacets()[i0 + i][0][1] = triangles[i][1];
-                mesh->getFacets()[i0 + i][0][2] = triangles[i][2];
-            }
-            for (unsigned int i0 = facets.size() + triangles.size(), i = 0; i<quads.size(); ++i)
-            {
-                mesh->getFacets()[i0 + i].resize(1);
-                mesh->getFacets()[i0 + i][0].resize(4);
-                mesh->getFacets()[i0 + i][0][0] = quads[i][0];
-                mesh->getFacets()[i0 + i][0][1] = quads[i][1];
-                mesh->getFacets()[i0 + i][0][2] = quads[i][2];
-                mesh->getFacets()[i0 + i][0][3] = quads[i][3];
-            }
-        }
+    //// Finest level is asked
+    //if (_finestConnectivity.getValue())
+    //{
+    //    std::string filename = this->fileTopology.getValue();
+    //    if (!filename.empty()) // file given, try to load it.
+    //    {
+    //        mesh = helper::io::Mesh::Create(filename.c_str());
+    //        if (!mesh)
+    //        {
+    //            serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel Can't create mesh from file=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
+    //            return;
+    //        }
+    //    }
+    //    if(filename.empty() && vertices.getValue().empty()) // No vertices buffer set, nor mesh file => impossible to create mesh
+    //    {
+    //        serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
+    //        return;
+    //    }
+    //    else if(filename.empty() && !vertices.getValue().empty()) // no file given but vertex buffer. We can rebuild the mesh
+    //    {
+    //        mesh = new helper::io::Mesh();
+    //        for (unsigned int i = 0; i<vertices.getValue().size(); ++i)
+    //            mesh->getVertices().push_back(vertices.getValue()[i]);
+    //        const helper::vector < helper::vector <int> >& facets = this->facets.getValue();
+    //        const SeqTriangles& triangles = this->input_triangles.getValue();
+    //        const SeqQuads& quads = this->input_quads.getValue();
+    //        mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
+    //        for (unsigned int i = 0; i<facets.size(); ++i)
+    //            mesh->getFacets()[i].push_back(facets[i]);
+    //        for (unsigned int i0 = facets.size(), i = 0; i<triangles.size(); ++i)
+    //        {
+    //            mesh->getFacets()[i0 + i].resize(1);
+    //            mesh->getFacets()[i0 + i][0].resize(3);
+    //            mesh->getFacets()[i0 + i][0][0] = triangles[i][0];
+    //            mesh->getFacets()[i0 + i][0][1] = triangles[i][1];
+    //            mesh->getFacets()[i0 + i][0][2] = triangles[i][2];
+    //        }
+    //        for (unsigned int i0 = facets.size() + triangles.size(), i = 0; i<quads.size(); ++i)
+    //        {
+    //            mesh->getFacets()[i0 + i].resize(1);
+    //            mesh->getFacets()[i0 + i][0].resize(4);
+    //            mesh->getFacets()[i0 + i][0][0] = quads[i][0];
+    //            mesh->getFacets()[i0 + i][0][1] = quads[i][1];
+    //            mesh->getFacets()[i0 + i][0][2] = quads[i][2];
+    //            mesh->getFacets()[i0 + i][0][3] = quads[i][3];
+    //        }
+    //    }
 
-    }
+    //}
 
-    // loop on every cubes
-    for(int z=0; z<getNz()-1; ++z)
-        for(int y=0; y<getNy()-1; ++y)
-            for(int x=0; x<getNx()-1; ++x)
-            {
-                const int cubeIdxRG = _regularGrid->cube(x,y,z);
-                const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
+    //// loop on every cubes
+    //for(int z=0; z<getNz()-1; ++z)
+    //    for(int y=0; y<getNy()-1; ++y)
+    //        for(int x=0; x<getNx()-1; ++x)
+    //        {
+    //            const int cubeIdxRG = _regularGrid->cube(x,y,z);
+    //            const int cubeIdx = _indicesOfRegularCubeInSparseGrid[cubeIdxRG];
 
-                if(cubeIdx != -1) // if existing in SG (ie not outside)
-                {
+    //            if(cubeIdx != -1) // if existing in SG (ie not outside)
+    //            {
 
-                    Connexion* actualConnexion = _connexions[cubeIdx][0];
+    //                Connexion* actualConnexion = _connexions[cubeIdx][0];
 
-                    // find all neighbors in 3 directions
+    //                // find all neighbors in 3 directions
 
-                    if(x>0)
-                    {
-                        // left neighbor
-                        const int neighborIdxRG = _regularGrid->cube(x-1,y,z);
-                        const int neighborIdx = _indicesOfRegularCubeInSparseGrid[neighborIdxRG];
+    //                if(x>0)
+    //                {
+    //                    // left neighbor
+    //                    const int neighborIdxRG = _regularGrid->cube(x-1,y,z);
+    //                    const int neighborIdx = _indicesOfRegularCubeInSparseGrid[neighborIdxRG];
 
-                        if(_indicesOfRegularCubeInSparseGrid[neighborIdxRG] != -1 && sharingTriangle( mesh, cubeIdx, neighborIdx, LEFT ))
-                        {
-                            Connexion* neighbor = _connexions[neighborIdx][0];
-                            actualConnexion->_neighbors[LEFT].insert(neighbor);
-                            neighbor->_neighbors[RIGHT].insert(actualConnexion);
-                        }
-                    }
-                    if(y>0)
-                    {
-                        // lower neighbor
-                        const int neighborIdxRG = _regularGrid->cube(x,y-1,z);
-                        const int neighborIdx = _indicesOfRegularCubeInSparseGrid[neighborIdxRG];
+    //                    if(_indicesOfRegularCubeInSparseGrid[neighborIdxRG] != -1 && sharingTriangle( mesh, cubeIdx, neighborIdx, LEFT ))
+    //                    {
+    //                        Connexion* neighbor = _connexions[neighborIdx][0];
+    //                        actualConnexion->_neighbors[LEFT].insert(neighbor);
+    //                        neighbor->_neighbors[RIGHT].insert(actualConnexion);
+    //                    }
+    //                }
+    //                if(y>0)
+    //                {
+    //                    // lower neighbor
+    //                    const int neighborIdxRG = _regularGrid->cube(x,y-1,z);
+    //                    const int neighborIdx = _indicesOfRegularCubeInSparseGrid[neighborIdxRG];
 
-                        if(_indicesOfRegularCubeInSparseGrid[neighborIdxRG] != -1 && sharingTriangle( mesh, cubeIdx, neighborIdx, DOWN ))
-                        {
-                            Connexion* neighbor = _connexions[neighborIdx][0];
-                            actualConnexion->_neighbors[DOWN].insert(neighbor);
-                            neighbor->_neighbors[UP].insert(actualConnexion);
-                        }
+    //                    if(_indicesOfRegularCubeInSparseGrid[neighborIdxRG] != -1 && sharingTriangle( mesh, cubeIdx, neighborIdx, DOWN ))
+    //                    {
+    //                        Connexion* neighbor = _connexions[neighborIdx][0];
+    //                        actualConnexion->_neighbors[DOWN].insert(neighbor);
+    //                        neighbor->_neighbors[UP].insert(actualConnexion);
+    //                    }
 
-                    }
-                    if(z>0)
-                    {
-                        // back neighbor
-                        const int neighborIdxRG = _regularGrid->cube(x,y,z-1);
-                        const int neighborIdx = _indicesOfRegularCubeInSparseGrid[neighborIdxRG];
+    //                }
+    //                if(z>0)
+    //                {
+    //                    // back neighbor
+    //                    const int neighborIdxRG = _regularGrid->cube(x,y,z-1);
+    //                    const int neighborIdx = _indicesOfRegularCubeInSparseGrid[neighborIdxRG];
 
-                        if(_indicesOfRegularCubeInSparseGrid[neighborIdxRG] != -1 && sharingTriangle( mesh, cubeIdx, neighborIdx, BEFORE ))
-                        {
-                            Connexion* neighbor = _connexions[neighborIdx][0];
-                            actualConnexion->_neighbors[BEFORE].insert(neighbor);
-                            neighbor->_neighbors[BEHIND].insert(actualConnexion);
-                        }
-                    }
-                }
-            }
+    //                    if(_indicesOfRegularCubeInSparseGrid[neighborIdxRG] != -1 && sharingTriangle( mesh, cubeIdx, neighborIdx, BEFORE ))
+    //                    {
+    //                        Connexion* neighbor = _connexions[neighborIdx][0];
+    //                        actualConnexion->_neighbors[BEFORE].insert(neighbor);
+    //                        neighbor->_neighbors[BEHIND].insert(actualConnexion);
+    //                    }
+    //                }
+    //            }
+    //        }
 
 
 
@@ -230,7 +230,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
     }
 
 
-    delete mesh;
+    //delete mesh;
 
 
 // 				printNeighborhood();
@@ -1009,16 +1009,16 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
-    const std::string& fileTopology = this->fileTopology.getValue();
-    if (fileTopology.empty()) // If no file is defined, try to build from the input Datas
-    {
-        _virtualFinerLevels[0]->vertices.setParent(&this->vertices);
-        _virtualFinerLevels[0]->facets.setParent(&this->facets);
-        _virtualFinerLevels[0]->input_triangles.setParent(&this->input_triangles);
-        _virtualFinerLevels[0]->input_quads.setParent(&this->input_quads);
-    }
-    else
-        _virtualFinerLevels[0]->load(fileTopology.c_str());
+    //const std::string& fileTopology = this->fileTopology.getValue();
+    //if (fileTopology.empty()) // If no file is defined, try to build from the input Datas
+    //{
+    //    _virtualFinerLevels[0]->vertices.setParent(&this->vertices);
+    //    _virtualFinerLevels[0]->facets.setParent(&this->facets);
+    //    _virtualFinerLevels[0]->input_triangles.setParent(&this->input_triangles);
+    //    _virtualFinerLevels[0]->input_quads.setParent(&this->input_quads);
+    //}
+    //else
+    //    _virtualFinerLevels[0]->load(fileTopology.c_str());
     _virtualFinerLevels[0]->init();
 
     sout<<"buildVirtualFinerLevels : ";

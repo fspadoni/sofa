@@ -256,8 +256,8 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setName( nameg.str().c_str() );
     this->addSlave(_virtualFinerLevels[0]); //->setContext( this->getContext() );
     sgmt->_erasePreviousCoef.setValue(_erasePreviousCoef.getValue());
-    _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
-    sgmt->_fileTopologies.setValue(this->_fileTopologies.getValue());
+    //_virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
+    //sgmt->_fileTopologies.setValue(this->_fileTopologies.getValue());
     sgmt->_dataStiffnessCoefs.setValue(this->_dataStiffnessCoefs.getValue());
     sgmt->_dataMassCoefs.setValue(this->_dataMassCoefs.getValue());
     sgmt->_finestConnectivity.setValue( _finestConnectivity.getValue() );

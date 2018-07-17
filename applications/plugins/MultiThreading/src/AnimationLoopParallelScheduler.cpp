@@ -2,6 +2,7 @@
 
 #include "TaskScheduler.h"
 #include "AnimationLoopTasks.h"
+#include "InitTasks.h"
 #include "DataExchange.h"
 
 #include <sofa/core/ObjectFactory.h>

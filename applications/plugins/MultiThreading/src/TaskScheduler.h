@@ -117,6 +117,8 @@ namespace sofa
             
             std::deque<Task*> _tasks;
             
+			Task* _stolenTask;
+
             std::thread  _stdThread;
             
 			Task::Status*	_currentStatus;

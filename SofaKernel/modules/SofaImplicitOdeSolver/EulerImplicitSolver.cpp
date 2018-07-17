@@ -96,9 +96,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     mop.cparams.setV(vResult);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); 
+	dx.realloc( &vop, false, true);
 
-    x.realloc( &vop, true, true );
+    x.realloc( &vop, false, true);
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO

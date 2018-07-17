@@ -9,7 +9,8 @@ set(HEADER_FILES
     config.h
     src/TaskScheduler.h
     src/Tasks.h
-    src/Locks.h
+	src/InitTasks.h
+    src/Locks.h	
     src/AnimationLoopParallelScheduler.h
     src/AnimationLoopTasks.h
     src/BeamLinearMapping_mt.h
@@ -17,25 +18,31 @@ set(HEADER_FILES
     src/BeamLinearMapping_tasks.inl
     src/DataExchange.h
     src/DataExchange.inl
-    
+	src/VisitorAsync.h
+	src/SolveVisitorAsync.h
+	src/FreeMotionAnimationLoopAsync.h   
 )
 
 set(SOURCE_FILES
     src/initMultiThreading.cpp
     src/TaskScheduler.cpp
     src/Tasks.cpp
+	src/InitTasks.cpp
     src/AnimationLoopParallelScheduler.cpp
     src/AnimationLoopTasks.cpp
     src/BeamLinearMapping_mt.cpp
     src/DataExchange.cpp    
+	src/SolveVisitorAsync.cpp
+	src/FreeMotionAnimationLoopAsync.cpp
 )
 
 find_package(SofaMisc REQUIRED)
-find_package(Boost QUIET COMPONENTS system thread date_time chrono)
+#find_package(Boost QUIET COMPONENTS system thread date_time chrono)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping)
+target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping SofaConstraint)
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")

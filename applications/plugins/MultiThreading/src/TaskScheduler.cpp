@@ -165,6 +165,7 @@ namespace sofa
 
 		WorkerThread::WorkerThread(TaskScheduler* const& pScheduler)
         : _tasks()
+		, _stolenTask(nullptr)
         , _taskScheduler(pScheduler)
 		{
 			assert(pScheduler);
@@ -223,7 +224,7 @@ namespace sofa
                 while ( _taskScheduler->_mainTaskStatus != nullptr)
 				{
 				
-					doWork(0);
+					doWork(nullptr);
 
 				
 					if (_taskScheduler->isClosing() )
@@ -258,7 +259,6 @@ namespace sofa
 
 		void WorkerThread::doWork(Task::Status* status)
 		{
-
 			do
 			{
 				Task*		pTask;
@@ -301,7 +301,7 @@ namespace sofa
 			while (status->isBusy())
 			{
 				doWork(status);
-			}
+			}			
 
 			if (_taskScheduler->_mainTaskStatus == status)
 			{
@@ -368,13 +368,19 @@ namespace sofa
 		bool WorkerThread::giveUpSomeWork(WorkerThread* idleThread)
 		{
             ScopedLock lock( _taskMutex );
-            Task* stealedTask = nullptr;
+            Task* stolenTask = nullptr;
             if (!_tasks.empty() )
             {
-                stealedTask = _tasks.front();
-                _tasks.pop_front();
-                idleThread->_tasks.push_back(stealedTask);
-                return true;
+				stolenTask = _tasks.front();
+				if (stolenTask)
+				{
+					_tasks.pop_front();
+					idleThread->_tasks.push_back(stolenTask);
+					//idleThread->_stolenTask = stolenTask;
+					return true;
+				}
+				return false;
+                
             }
             return false;
 		}

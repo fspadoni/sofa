@@ -81,7 +81,7 @@ namespace simulation
 
 	AnimationLoopParallelScheduler::~AnimationLoopParallelScheduler()
 	{	
-
+		//TaskScheduler::getInstance().stop();
 	}
 
 	void AnimationLoopParallelScheduler::init()
@@ -121,7 +121,7 @@ namespace simulation
 
 	void AnimationLoopParallelScheduler::cleanup()
 	{
-
+		TaskScheduler::getInstance().stop();
 	}
 
 	void AnimationLoopParallelScheduler::step(const core::ExecParams* params, SReal dt)

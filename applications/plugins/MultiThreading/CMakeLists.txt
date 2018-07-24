@@ -21,6 +21,8 @@ set(HEADER_FILES
 	src/VisitorAsync.h
 	src/SolveVisitorAsync.h
 	src/FreeMotionAnimationLoopAsync.h   
+	src/TaskSchedulerProfiler.h
+	src/LCPConstraintSolverAsync.h
 )
 
 set(SOURCE_FILES
@@ -34,6 +36,7 @@ set(SOURCE_FILES
     src/DataExchange.cpp    
 	src/SolveVisitorAsync.cpp
 	src/FreeMotionAnimationLoopAsync.cpp
+	src/LCPConstraintSolverAsync.cpp
 )
 
 find_package(SofaMisc REQUIRED)

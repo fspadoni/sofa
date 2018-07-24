@@ -1,6 +1,9 @@
 #include "TaskScheduler.h"
 
+#include "TaskSchedulerProfiler.h"
 //#include <sofa/helper/system/thread/CTime.h>
+
+#include <string>   
 
 namespace sofa
 {
@@ -9,6 +12,10 @@ namespace sofa
 	{
         
         static thread_local WorkerThread* _workerThreadIndex = nullptr;
+
+        //DEFINE_TASK_SCHEDULER_PROFILER(RunTask);
+        //DEFINE_TASK_SCHEDULER_PROFILER(StealTask); 
+        //DEFINE_TASK_SCHEDULER_PROFILER(Idle);
 
         
 		TaskScheduler& TaskScheduler::getInstance()
@@ -24,7 +31,7 @@ namespace sofa
 			_isClosing = false;
 
             // init global static thread local var
-            _workerThreadIndex = new WorkerThread(this);
+            _workerThreadIndex = new WorkerThread(this, 0, "Main  ");
 
 			_threads[std::this_thread::get_id()] = _workerThreadIndex;
            
@@ -87,7 +94,7 @@ namespace sofa
             /* start worker threads */
             for( unsigned int i=1; i<_threadCount; ++i)
             {
-				WorkerThread* thread = new WorkerThread(this);
+				WorkerThread* thread = new WorkerThread(this, i);
 				thread->create_and_attach(this);
 				_threads[thread->getId()] = thread;
 				thread->start(this);
@@ -166,10 +173,13 @@ namespace sofa
 
 
 
-		WorkerThread::WorkerThread(TaskScheduler* const& pScheduler)
+		WorkerThread::WorkerThread(TaskScheduler* const& pScheduler, const int index, const std::string& name)
         : _tasks()
+        , _index(index)
+        , _name(name + std::to_string(index))
 		, _stolenTask(nullptr)
         , _taskScheduler(pScheduler)
+        
 		{
 			assert(pScheduler);
 			_finished		= false;
@@ -246,6 +256,8 @@ namespace sofa
         void WorkerThread::Idle()
         {
             {
+                //TASK_SCHEDULER_PROFILER(Idle);
+
                 std::unique_lock<std::mutex> lock( _taskScheduler->_wakeUpMutex );
 				if (!_taskScheduler->_workerThreadsIdle)
 				{
@@ -261,21 +273,25 @@ namespace sofa
 		{
 			do
 			{
-				Task*		pTask;
+				Task*		task;
 				Task::Status*	pPrevStatus = nullptr;
 
-				while (popTask(&pTask))
+				while (popTask(&task))
 				{
 					// run
 					pPrevStatus = _currentStatus;
-					_currentStatus = pTask->getStatus();
+					_currentStatus = task->getStatus();
 				
-					if (pTask->run(this))
-					{
-						// pooled memory: call destructor and free
-						pTask->~Task();
-						//free(pTask);
-					}
+                    {
+                        //TASK_SCHEDULER_PROFILER(RunTask);
+
+                        if (task->run(this))
+                        {
+                            // pooled memory: call destructor and free
+                            task->~Task();
+                            delete task;
+                        }
+                    }					
 					
 					_currentStatus->markBusy(false);
 					_currentStatus = pPrevStatus;
@@ -354,12 +370,16 @@ namespace sofa
             }
 			
             // we are single thread: run the task
-            if (task->run(this))
             {
-                // pooled memory: call destructor and free
-                task->~Task();
-                //free(pTask);
-            }
+                //TASK_SCHEDULER_PROFILER(RunTask);
+
+                if (task->run(this))
+                {
+                    // pooled memory: call destructor and free
+                    task->~Task();
+                    delete task;
+                }
+            }            
             
 			return false;
 		}
@@ -388,20 +408,23 @@ namespace sofa
 
 		bool WorkerThread::stealTasks()
 		{
+            {
+                //TASK_SCHEDULER_PROFILER(StealTask);
 
-			for (auto it : _taskScheduler->_threads)
-			{
-				// if this is the main thread continue
-				if (std::this_thread::get_id() == it.first)
-				{
-					continue;
-				}
+                for (auto it : _taskScheduler->_threads)
+                {
+                    // if this is the main thread continue
+                    if (std::this_thread::get_id() == it.first)
+                    {
+                        continue;
+                    }
 
-				if (it.second->giveUpSomeWork(this))
-				{
-					return true;
-				}
-			}
+                    if (it.second->giveUpSomeWork(this))
+                    {
+                        return true;
+                    }
+                }
+            }			
 
 			return false;
 		}

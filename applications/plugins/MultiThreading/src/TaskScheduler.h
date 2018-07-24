@@ -50,7 +50,7 @@ namespace sofa
 		{
 		public:
 
-			WorkerThread(TaskScheduler* const& taskScheduler);
+			WorkerThread(TaskScheduler* const& taskScheduler, const int index, const std::string& name = "Worker");
 
 			~WorkerThread();
 
@@ -62,6 +62,10 @@ namespace sofa
 			void workUntilDone(Task::Status* status);
 
 			Task::Status* getCurrentStatus() const {return _currentStatus;}
+
+            const char* getName() { return _name.c_str(); }
+
+            const size_t getIndex() { return _index; }
 
             const std::thread::id getId();
             
@@ -110,6 +114,10 @@ namespace sofa
 			{
 				Max_TasksPerThread = 256
 			};
+
+            const std::string _name;
+
+            const size_t _index;
 
             SpinLock _taskMutex;
             

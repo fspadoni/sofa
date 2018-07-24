@@ -42,6 +42,8 @@ sofa_add_plugin(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 
+sofa_add_plugin(sofa_plugins/Performance Performance)
+
 # SOFA_WITH_EXPERIMENTAL_FEATURES_17_12
 sofa_add_plugin_experimental(PSL PSL)
 

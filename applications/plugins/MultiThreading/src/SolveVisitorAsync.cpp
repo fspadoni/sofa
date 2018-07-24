@@ -24,6 +24,7 @@
 
 #include <sofa/helper/AdvancedTimer.h>
 #include <MultiThreading/src/TaskScheduler.h>
+#include <MultiThreading/src/TaskSchedulerProfiler.h>
 
 namespace sofa
 {
@@ -31,6 +32,7 @@ namespace sofa
 namespace simulation
 {
 
+    DEFINE_TASK_SCHEDULER_PROFILER(SolveVisitorAsyncTask);
 
 	class SolveVisitorAsyncTask : public simulation::Task
 	{
@@ -46,14 +48,24 @@ namespace simulation
 			,_solver(solver)
 		{}
 
-		virtual ~SolveVisitorAsyncTask() { }
+		virtual ~SolveVisitorAsyncTask()
+        { 
+            //delete this;
+        }
 
 		virtual bool run(simulation::WorkerThread*)
 		{
+            //TASK_SCHEDULER_PROFILER(SolveVisitorAsyncTask);
+
+            auto start = std::chrono::high_resolution_clock::now();
+
 			//void (SolveVisitorAsync::*)(VContext*, Object*) 
 			//auto processSolver_func = std::bind(&_solveVisitorAsync->processSolver, _node, _solver);//  _solveVisitorAsync->processSolver(_node, _solver);
 			//_solveVisitorAsync->for_each(_solveVisitorAsync, _node, _solver, processSolver_func);
 			_solveVisitorAsync->processSolver(_node, (*_solver)[0]);
+
+            auto end = std::chrono::high_resolution_clock::now();
+            _millis = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 			return true;
 		}
 
@@ -62,6 +74,7 @@ namespace simulation
 		SolveVisitorAsync* _solveVisitorAsync;
 		simulation::Node* _node;
 		Node::Sequence<sofa::core::behavior::OdeSolver>* _solver;
+        long long _millis;
 	};
 
 

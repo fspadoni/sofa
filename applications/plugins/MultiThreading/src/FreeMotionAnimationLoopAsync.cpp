@@ -60,7 +60,7 @@ using namespace sofa::simulation;
 
 FreeMotionAnimationLoopAsync::FreeMotionAnimationLoopAsync(simulation::Node* gnode)
     : Inherit(gnode)
-	//, threadNumber(initData(&threadNumber, (unsigned int)0, "threadNumber", "number of thread"))
+	, m_threadNumber(initData(&m_threadNumber,  0, "threadNumber", "number of thread"))
     , m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
 	, constraintSolver(NULL)
     , defaultSolver(NULL)
@@ -85,18 +85,18 @@ void FreeMotionAnimationLoopAsync::parse ( sofa::core::objectmodel::BaseObjectDe
 
 void FreeMotionAnimationLoopAsync::init()
 {
-	//if (threadNumber.getValue())
-	//{
-	//	_nbThread = threadNumber.getValue();
-	//}
+	if (m_threadNumber.getValue())
+	{
+		_nbThread = m_threadNumber.getValue();
+	}
 
 	TaskScheduler::getInstance().init(_nbThread);
 	initThreadLocalData();
 
     {
-    simulation::common::VectorOperations vop(core::ExecParams::defaultInstance(), this->getContext());
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
-    MultiVecDeriv df(&vop, core::VecDerivId::dforce() ); df.realloc( &vop, true, true );
+        simulation::common::VectorOperations vop(core::ExecParams::defaultInstance(), this->getContext());
+        MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+        MultiVecDeriv df(&vop, core::VecDerivId::dforce() ); df.realloc( &vop, true, true );
     }
 
 
@@ -118,19 +118,18 @@ void FreeMotionAnimationLoopAsync::init()
 
 void FreeMotionAnimationLoopAsync::bwdInit()
 {
-
 	//initThreadLocalData();
-
 }
 
 
 void FreeMotionAnimationLoopAsync::reinit()
 {
-	//if (_nbThread != threadNumber.getValue())
-	//{
-		//_nbThread = threadNumber.getValue();
-	TaskScheduler::getInstance().init(_nbThread);
-	//}
+    if (m_threadNumber.getValue() != TaskScheduler::getInstance().getThreadCount())
+    {
+        _nbThread = m_threadNumber.getValue();
+        TaskScheduler::getInstance().init(_nbThread);
+        initThreadLocalData();
+    }
 }
 
 void FreeMotionAnimationLoopAsync::cleanup()
@@ -229,11 +228,18 @@ void FreeMotionAnimationLoopAsync::step(const sofa::core::ExecParams* params, SR
     // Free Motion
     AdvancedTimer::stepBegin("FreeMotion");
 	
+    auto start = std::chrono::high_resolution_clock::now();
+
 	simulation::Task::Status solverTaskStatus;
 	simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();
     simulation::SolveVisitorAsync freeMotion(nullptr /*params*/, &solverTaskStatus, dt, true);
     this->gnode->execute(&freeMotion);
 	thread->workUntilDone(&solverTaskStatus);
+    //while (solverTaskStatus.isBusy()) {}
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    //std::cout << " " <<  "SolveVisitorAsync executed in " << millis << " ms\n";
 
     AdvancedTimer::stepEnd("FreeMotion");
 

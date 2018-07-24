@@ -79,7 +79,7 @@ public:
 
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
 
-	Data<int> threadNumber; ///< number of thread
+	Data<int> m_threadNumber; ///< number of thread
 
 private:
 	// thread storage initialization

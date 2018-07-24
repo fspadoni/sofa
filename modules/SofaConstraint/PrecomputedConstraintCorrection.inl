@@ -1077,6 +1077,8 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     bool error_message_not_displayed=true;
 #endif
 
+    constraint_dofs.clear();
+
     /////////// The constraints on the same nodes are gathered //////////////////////
     //gatherConstraints();
     /////////////////////////////////////////////////////////////////////////////////
@@ -1124,8 +1126,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         id_to_localIndex[cId] = cpt;
         localIndex_to_id.push_back(cId);
 
-        if(fabs(f[cId]) > std::numeric_limits<double>::epsilon())
-            active_local_force.push_back(cpt);
+        // Fede: the only reference to f
+        //if(fabs(f[cId]) > std::numeric_limits<double>::epsilon())
+        //    active_local_force.push_back(cpt);
 
 #ifdef NEW_METHOD_UNBUILT  // Fill constraint_F => provide the present constraint forces
         double fC = f[rowIt.index()];

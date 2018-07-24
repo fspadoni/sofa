@@ -19,15 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SPARSE_SOLVER_SPARSE_SOLVER_H
-#define SOFA_SPARSE_SOLVER_SPARSE_SOLVER_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_TEST_FAKE_TOPOLOGYSCENE_H
+#define SOFA_COMPONENT_TOPOLOGY_TEST_FAKE_TOPOLOGYSCENE_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/core/topology/Topology.h>
+#include <SofaSimulationGraph/SimpleApi.h>
 
-#ifdef SOFA_BUILD_SPARSE_SOLVER
-#  define SOFA_SPARSE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SPARSE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+class fake_TopologyScene
+{
+public:
+    /**
+    * Default constructor, take the filepath of the mesh file to load, the type of topology and if the topology is static (MeshTopology)
+    */
+    fake_TopologyScene(const std::string& filename, sofa::core::topology::TopologyObjectType topoType, bool staticTopo = false);
 
-#endif
+    /// Method to load the mesh and fill the topology asked
+    bool loadMeshFile();
+
+    /// Method to get acces to node containing the meshLoader and the toplogy container.
+    sofa::simulation::Node::SPtr getNode() { return m_root; }
+
+protected:
+    /// Simulation object
+    sofa::simulation::Simulation::SPtr m_simu;
+    /// Node containing the topology
+    sofa::simulation::Node::SPtr m_root;
+
+    /// Type of topology asked
+    sofa::core::topology::TopologyObjectType m_topoType;
+    /// filepath of the mesh to load
+    std::string m_filename;
+    /// Bool storing if static or dynamyc topology.
+    bool m_staticTopology;
+};
+
+
+#endif // SOFA_COMPONENT_TOPOLOGY_TEST_FAKE_TOPOLOGYSCENE_H

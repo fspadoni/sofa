@@ -19,47 +19,74 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHTRIAN_H
-#define SOFA_HELPER_IO_MESHTRIAN_H
-
-#include <sofa/helper/io/Mesh.h>
+#include <SofaSparseSolver/config.h>
+#include <sofa/core/ObjectFactory.h>
+#include <string>
 
 namespace sofa
 {
 
-namespace helper
+namespace component
 {
 
-namespace io
+extern "C" {
+SOFA_SOFASPARSESOLVER_API void initExternalModule();
+SOFA_SOFASPARSESOLVER_API const char* getModuleName();
+SOFA_SOFASPARSESOLVER_API const char* getModuleVersion();
+SOFA_SOFASPARSESOLVER_API const char* getModuleLicense();
+SOFA_SOFASPARSESOLVER_API const char* getModuleDescription();
+SOFA_SOFASPARSESOLVER_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
-
-/// Cette classe permet la fabrication d'un visuel pour un fichier de type trian
-/// ces fichiers se presentent de la maniere suivante
-/// nombre de sommets
-///liste des coordonnees des sommets ex 1.45 1.25 6.85
-/// nombre de faces
-///liste de toutes les faces ex 1 2 3 0 0 0 les 3 derniers chiffres ne sont pas utilises pour le moment
-
-class SOFA_HELPER_API MeshTrian : public Mesh
-{
-private:
-
-    void readTrian(FILE *file);
-
-public:
-
-    MeshTrian(const std::string& filename)
+    static bool first = true;
+    if (first)
     {
-        init(filename);
+        first = false;
     }
+}
 
-    void init(std::string filename);
-};
+const char* getModuleName()
+{
+    return "SofaSparseSolver";
+}
 
-} // namespace io
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
-} // namespace helper
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-} // namespace sofa
+const char* getModuleDescription()
+{
+    return "This plugin contains sparse solver for direct solving of linear systems.";
+}
 
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+SOFA_LINK_CLASS(PrecomputedLinearSolver)
+
+#ifdef SOFA_HAVE_CSPARSE
+SOFA_LINK_CLASS(SparseCholeskySolver)
+SOFA_LINK_CLASS(SparseLUSolver)
 #endif
+
+#ifdef SOFA_HAVE_METIS
+SOFA_LINK_CLASS(SparseLDLSolver)
+#endif
+
+} /// component
+
+} /// sofa
+
+

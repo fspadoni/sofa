@@ -19,22 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_SPARSE_SOLVER_INIT_H
-#define SOFA_COMPONENT_SPARSE_SOLVER_INIT_H
-#include "config.h"
+#ifndef SOFA_HELPER_IO_MESHGMSH_H
+#define SOFA_HELPER_IO_MESHGMSH_H
+
+#include <sofa/helper/io/Mesh.h>
+#include <istream>
 
 namespace sofa
 {
 
-namespace component
+namespace helper
 {
 
+namespace io
+{
 
-void SOFA_SPARSE_SOLVER_API initSparseSolver();
+class SOFA_HELPER_API MeshGmsh : public Mesh
+{
+public:
 
-} // namespace component
+    MeshGmsh(const std::string& filename)
+    {
+        init (filename);
+    }
+
+    void init (std::string filename);
+
+protected:
+
+    bool readGmsh(std::ifstream &file, const unsigned int gmshFormat);
+
+    void addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group, int tag, int eid);
+
+    void normalizeGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group);
+};
+
+} // namespace io
+
+} // namespace helper
 
 } // namespace sofa
 
-#endif
-
+#endif // SOFA_HELPER_IO_MESHGMSH_H

@@ -11,11 +11,10 @@ namespace sofa
 	namespace simulation
 	{
         
-        static thread_local WorkerThread* _workerThreadIndex = nullptr;
+        // mac clang 3.5 doesn't support thread_local vars
+        //static thread_local WorkerThread* workerThreadIndex = nullptr;
 
-        //DEFINE_TASK_SCHEDULER_PROFILER(RunTask);
-        //DEFINE_TASK_SCHEDULER_PROFILER(StealTask); 
-        //DEFINE_TASK_SCHEDULER_PROFILER(Idle);
+        std::map< std::thread::id, WorkerThread*> TaskScheduler::_threads;
 
         
 		TaskScheduler& TaskScheduler::getInstance()
@@ -31,10 +30,10 @@ namespace sofa
 			_isClosing = false;
 
             // init global static thread local var
-            _workerThreadIndex = new WorkerThread(this, 0, "Main  ");
+            //_workerThreadIndex = new WorkerThread(this, 0, "Main  ");
+			//_threads[std::this_thread::get_id()] = _workerThreadIndex;
 
-			_threads[std::this_thread::get_id()] = _workerThreadIndex;
-           
+            _threads[std::this_thread::get_id()] = new WorkerThread(this, 0, "Main  ");           
 		}
 
 		TaskScheduler::~TaskScheduler()
@@ -218,13 +217,20 @@ namespace sofa
 
         WorkerThread* WorkerThread::getCurrent()
         {
-            return _workerThreadIndex;
+            //return workerThreadIndex;
+            auto thread = TaskScheduler::_threads.find(std::this_thread::get_id());
+            if (thread == TaskScheduler::_threads.end())
+            {
+                return nullptr;
+            }
+            return thread->second;
         }
 
 		void WorkerThread::run(void)
 		{
             
-            _workerThreadIndex = this;
+            //workerThreadIndex = this;
+            TaskScheduler::_threads[std::this_thread::get_id()] = this;
 
 			// main loop
             while ( !_taskScheduler->isClosing() )

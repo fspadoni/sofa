@@ -19,11 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHSTL_H
-#define SOFA_HELPER_IO_MESHSTL_H
+/*****************************************************************************
+* User of this library should read the documentation
+* in the messaging.h file.
+******************************************************************************/
 
-#include <sofa/helper/io/Mesh.h>
-#include <fstream>
+#include <sofa/helper/system/console.h>
+#include "Message.h"
+#include "MessageFormatter.h"
 
 namespace sofa
 {
@@ -31,35 +34,41 @@ namespace sofa
 namespace helper
 {
 
-namespace io
+namespace logging
 {
 
-class SOFA_HELPER_API MeshSTL : public Mesh
-{
-public:
+std::string MessageFormatter::getPrefixText(unsigned int type) const {
+    switch (type) {
+        case Message::Advice     : return "[SUGGESTION] ";
+        case Message::Deprecated : return "[DEPRECATED] ";
+        case Message::Warning    : return "[WARNING] ";
+        case Message::Info       : return "[INFO]    ";
+        case Message::Error      : return "[ERROR]   ";
+        case Message::Fatal      : return "[FATAL]   ";
+        case Message::TEmpty     : return "[EMPTY]   ";
 
-    MeshSTL(const std::string& filename)
-    {
-        init (filename);
+        default:
+            return "";
     }
+}
 
-    void init (std::string filename);
+std::ostream & MessageFormatter::setColor(std::ostream &os, unsigned int type) const {
+    switch (type) {
+        case Message::Advice     : return os << console::Foreground::Bright::Green;
+        case Message::Info       : return os << console::Foreground::Bright::Green;
+        case Message::Deprecated : return os << console::Foreground::Bright::Yellow;
+        case Message::Warning    : return os << console::Foreground::Bright::Cyan;
+        case Message::Error      : return os << console::Foreground::Bright::Red;
+        case Message::Fatal      : return os << console::Foreground::Bright::Magenta;
 
-protected:
+        case Message::TEmpty:
+        default:
+            return os << console::Foreground::Normal::Reset;
+    }
+}
 
-    /// ascii
-    void readSTL ( std::ifstream& file );
-
-    /// binary
-    void readBinarySTL (const std::string &filename);
-
-
-};
-
-} // namespace io
+} // namespace logging
 
 } // namespace helper
 
 } // namespace sofa
-
-#endif

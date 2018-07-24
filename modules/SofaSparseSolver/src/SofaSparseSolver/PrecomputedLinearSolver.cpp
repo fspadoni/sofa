@@ -19,42 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHVTK_H
-#define SOFA_HELPER_IO_MESHVTK_H
-
-#include <sofa/helper/io/Mesh.h>
-#include <fstream>
+// Author: Hadrien Courtecuisse
+//
+// Copyright: See COPYING file that comes with this distribution
+#include <SofaSparseSolver/PrecomputedLinearSolver.inl>
 
 namespace sofa
 {
 
-namespace helper
+namespace component
 {
 
-namespace io
+namespace linearsolver
 {
 
-class SOFA_HELPER_API MeshVTK : public Mesh
-{
-public:
+using namespace sofa::component::odesolver;
+using namespace sofa::component::linearsolver;
 
-    MeshVTK(const std::string& filename)
-    {
-        init(filename);
-    }
+SOFA_DECL_CLASS(PrecomputedLinearSolver)
 
-    void init(std::string filename);
+int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix")
+        .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> > >()
+        ;
 
-protected:
+} // namespace linearsolver
 
-    void readVTU(const std::string &filename);
-
-};
-
-} // namespace io
-
-} // namespace helper
+} // namespace component
 
 } // namespace sofa
 
-#endif

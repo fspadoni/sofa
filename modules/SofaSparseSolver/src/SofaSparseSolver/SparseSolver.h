@@ -19,9 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPRECONDITIONER_CONFIG_H
-#define SOFAPRECONDITIONER_CONFIG_H
+#ifndef SOFA_SPARSE_SOLVER_SPARSE_SOLVER_H
+#define SOFA_SPARSE_SOLVER_SPARSE_SOLVER_H
 
-#include <SofaGeneral/config.h>
+#include <sofa/helper/system/config.h>
+
+#ifdef SOFA_BUILD_SOFASPARSESOLVER
+#  define SOFA_SOFASPARSESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFASPARSESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

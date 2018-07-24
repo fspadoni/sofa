@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
-#include "PrecomputedLinearSolver.inl"
+#include <SofaPreconditioner/config.h>
+#include <sofa/core/ObjectFactory.h>
+#include <string>
 
 namespace sofa
 {
@@ -30,21 +29,62 @@ namespace sofa
 namespace component
 {
 
-namespace linearsolver
+extern "C" {
+SOFA_PRECONDITIONER_API void initExternalModule();
+SOFA_PRECONDITIONER_API const char* getModuleName();
+SOFA_PRECONDITIONER_API const char* getModuleVersion();
+SOFA_PRECONDITIONER_API const char* getModuleLicense();
+SOFA_PRECONDITIONER_API const char* getModuleDescription();
+SOFA_PRECONDITIONER_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-using namespace sofa::component::odesolver;
-using namespace sofa::component::linearsolver;
+const char* getModuleName()
+{
+    return "SofaPreconditioner";
+}
 
-SOFA_DECL_CLASS(PrecomputedLinearSolver)
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
-int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix")
-        .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> > >()
-        ;
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-} // namespace linearsolver
+const char* getModuleDescription()
+{
+    return "This plugin contains preconditionners to accelerate the solving of linear systems.";
+}
 
-} // namespace component
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
-} // namespace sofa
+SOFA_LINK_CLASS(ShewchukPCGLinearSolver)
+SOFA_LINK_CLASS(JacobiPreconditioner)
+SOFA_LINK_CLASS(BlockJacobiPreconditioner)
+SOFA_LINK_CLASS(SSORPreconditioner)
+SOFA_LINK_CLASS(WarpPreconditioner)
+SOFA_LINK_CLASS(PrecomputedWarpPreconditioner)
+
+} /// component
+
+} /// sofa
+
+
+
 

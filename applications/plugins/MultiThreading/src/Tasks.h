@@ -44,6 +44,13 @@ namespace sofa
 		{
 		public:
 
+            enum Memory
+            {
+                None,
+                Free,
+                Delete
+            };
+
             // Task Status class definition
             class Status
             {
@@ -85,7 +92,7 @@ namespace sofa
 			
 			virtual ~Task();
 
-			virtual bool run(WorkerThread* thread) = 0;
+			virtual Memory run(WorkerThread* thread) = 0;
             
 		private:
 
@@ -125,7 +132,7 @@ namespace sofa
 
 		private:
 
-			virtual bool run(WorkerThread* );
+			virtual Memory run(WorkerThread* );
 
 			//volatile long* mAtomicCounter;
 			std::atomic<int>* _atomicCounter;

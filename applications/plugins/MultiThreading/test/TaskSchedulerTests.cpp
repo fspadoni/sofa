@@ -43,23 +43,23 @@ namespace sofa
 
 
 
-	// compute the Fibonacci single thread
-	TEST(TaskSchedulerTests, FibonacciSingle )
-	{ 
-        // tested with
-        //  3 : 2
-        //  6 : 8
-        // 13 : 233
-        // 23 : 28657
-        // 27 : 196418
-        // 35 : 9227465
-        // 41 : 165580141
-        // 43 : 433494437
-        // 47 : 2971215073
-        const int64_t res = Fibonacci(27, 1);
-        EXPECT_EQ(res, 196418);
-		return;
-	}
+	//// compute the Fibonacci single thread
+	//TEST(TaskSchedulerTests, FibonacciSingle )
+	//{ 
+ //       // tested with
+ //       //  3 : 2
+ //       //  6 : 8
+ //       // 13 : 233
+ //       // 23 : 28657
+ //       // 27 : 196418
+ //       // 35 : 9227465
+ //       // 41 : 165580141
+ //       // 43 : 433494437
+ //       // 47 : 2971215073
+ //       const int64_t res = Fibonacci(43, 1);
+ //       EXPECT_EQ(res, 433494437);
+	//	return;
+	//}
 
 	// compute the Fibonacci multi thread
 	TEST(TaskSchedulerTests, FibonacciMulti)
@@ -74,24 +74,24 @@ namespace sofa
         // 41 : 165580141
         // 43 : 433494437
         // 47 : 2971215073
-        const int64_t res = Fibonacci(27);
-        EXPECT_EQ(res, 196418);
+        const int64_t res = Fibonacci(43);
+        EXPECT_EQ(res, 433494437);
 		return;
 	}
 
-	// compute the sum of integers from 1 to N single thread
-	TEST(TaskSchedulerTests, IntSumSingle)
-	{
-        const int64_t N = 1 << 20;
-        int64_t res = IntSum1ToN(N, 1);
-		EXPECT_EQ(res, (N)*(N+1)/2);
-		return;
-	}
+	//// compute the sum of integers from 1 to N single thread
+	//TEST(TaskSchedulerTests, IntSumSingle)
+	//{
+ //       const int64_t N = 1 << 26;
+ //       int64_t res = IntSum1ToN(N, 1);
+	//	EXPECT_EQ(res, (N)*(N+1)/2);
+	//	return;
+	//}
 
 	// compute the sum of integers from 1 to N multi thread
 	TEST(TaskSchedulerTests, IntSumMulti)
 	{
-        const int64_t N = 1 << 20;
+        const int64_t N = 1 << 26;
         int64_t res = IntSum1ToN(N);
 		EXPECT_EQ(res, (N)*(N + 1) / 2);
 		return;

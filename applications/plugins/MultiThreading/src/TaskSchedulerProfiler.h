@@ -30,7 +30,7 @@
 #include <algorithm>    // std::copy
 #include <sstream>
 
-#define ENABLE_TASK_SCHEDULER_PROFILER 1     // Comment this line to disable the profiler
+//#define ENABLE_TASK_SCHEDULER_PROFILER 1     // Comment this line to disable the profiler
 
 
 //namespace sofa
@@ -43,8 +43,6 @@
 
 #if ENABLE_TASK_SCHEDULER_PROFILER
 
-        static const float TaskSchedulerProfiler_ReportIntervalSecs = 1.0f;
-
         //------------------------------------------------------------------
         // A class for local variables created on the stack by the API_PROFILER macro:
         //------------------------------------------------------------------
@@ -56,9 +54,9 @@
             //------------------------------------------------------------------
             struct ThreadInfo
             {
-                long long accumulator;   // total time spent in target module since the last report
-                long long hitCount;      // number of times the target module was called since last report
-                const char *name;    // the name of the target module
+                long long accumulator;  // total time spent in target module since the last report
+                long long hitCount;     // number of times the target module was called since last report
+                const char *name;       // the name of the target module
                 std::vector<long long> timeIntervals;
                 std::chrono::time_point<std::chrono::high_resolution_clock> lastReportTime;
             };
@@ -69,7 +67,7 @@
 
             //static float s_ooFrequency;      // 1.0 divided by QueryPerformanceFrequency()
             const long long s_reportInterval = 1000;   // length of time between reports
-            void Flush(long long end);
+            void flush(long long end);
 
         public:
             
@@ -86,15 +84,17 @@
                 m_threadInfo->timeIntervals.push_back(timeInterval);
                 m_threadInfo->accumulator += timeInterval;
                 m_threadInfo->hitCount++;
-                if (std::chrono::duration_cast<std::chrono::milliseconds>(end - m_threadInfo->lastReportTime).count()  > s_reportInterval)
-                    Flush(end);
+                if (std::chrono::duration_cast<std::chrono::milliseconds>(end - m_threadInfo->lastReportTime).count() > s_reportInterval)
+                {
+                    flush(end);
+                }                    
             }
 
 
             //------------------------------------------------------------------
             // Flush is called at the rate determined by APIProfiler_ReportIntervalSecs
             //------------------------------------------------------------------
-            void Flush(std::chrono::time_point<std::chrono::high_resolution_clock> end)
+            void flush(std::chrono::time_point<std::chrono::high_resolution_clock> end)
             {
                 // Avoid garbage timing on first call by initializing a new interval:
                 auto count = m_threadInfo->lastReportTime.time_since_epoch().count();
@@ -112,22 +112,10 @@
                 sstream << "Thread " << sofa::simulation::WorkerThread::getCurrent()->getName()
                     << " time spent in " << m_threadInfo->name << ": "
                     << measured << " / " << interval << " ms " << 100.f * measured / interval << "%  " << m_threadInfo->hitCount << "x\n";
-
-                //printf("Thread %s time spent in \"%s\": %.0f/%.0f ms %.1f%% %dx\n",
-                //    sofa::simulation::WorkerThread::getCurrent()->getName(),
-                //    m_threadInfo->name,
-                //    measured,
-                //    interval,
-                //    100.f * measured / interval,
-                //    m_threadInfo->hitCount);
-
-                //output each element separated by a space
-                //std::copy(m_threadInfo->timeIntervals.begin(), m_threadInfo->timeIntervals.end(), std::ostream_iterator<long long>(std::cout, " "));
                 
                 for (auto iter : m_threadInfo->timeIntervals)
                 {
                     sstream << 0.001f * iter << ", ";
-                    //printf(" %f, ", 0.001f * iter);
                 }
                 sstream << "\n";
 

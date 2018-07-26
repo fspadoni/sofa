@@ -30,10 +30,10 @@ namespace sofa
         }
         
         
-        bool StepTask::run(WorkerThread* )
+        Task::Memory StepTask::run(WorkerThread* )
         {
             animationloop->step( core::ExecParams::defaultInstance(), dt);
-            return true;
+            return Memory::Delete;
         }
         
         

@@ -68,11 +68,11 @@ namespace constraintset
         {
         }
 
-        virtual bool run(simulation::WorkerThread*)
+        virtual Task::Memory run(simulation::WorkerThread*) override
         {
             TASK_SCHEDULER_PROFILER(AddComplianceInConstraintSpaceTask);
             _cc->addComplianceInConstraintSpace(_cparams, _W);
-            return true;
+            return Task::Memory::Delete;
         }
 
 
@@ -100,11 +100,11 @@ namespace constraintset
         {            
         }
 
-        virtual bool run(simulation::WorkerThread*)
+        virtual Task::Memory run(simulation::WorkerThread*) override
         {
             TASK_SCHEDULER_PROFILER(ResetForUnbuiltResolutionTask);
             _cc->resetForUnbuiltResolution(_f, _contact_sequence);
-            return true;
+            return Task::Memory::Delete;
         }
 
 

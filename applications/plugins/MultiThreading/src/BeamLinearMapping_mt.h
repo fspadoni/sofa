@@ -111,7 +111,7 @@ private:
 
 	public:
 
-		virtual bool run( simulation::WorkerThread* );
+		virtual Task::Memory run( simulation::WorkerThread* ) override;
 
 	protected:
 
@@ -141,7 +141,7 @@ private:
 	
 		applyJTask( const simulation::Task::Status* status );
 
-		virtual bool run( simulation::WorkerThread* );
+		virtual Task::Memory run( simulation::WorkerThread* ) override;
 
 	private:
 
@@ -166,7 +166,7 @@ private:
 		
 		applyJTmechTask( const simulation::Task::Status* status );
 	
-		virtual bool run( simulation::WorkerThread* );
+		virtual Task::Memory run( simulation::WorkerThread* ) override;
 
 	private:
 
@@ -187,7 +187,7 @@ private:
 	//public:
 	//	applyJTconstrTask( const simulation::Task::Status* status );
 
-	//	virtual bool run( simulation::WorkerThread* );
+	//	virtual Task::Memory run( simulation::WorkerThread* ) override;
 
 	//private:
 

@@ -17,7 +17,7 @@ namespace sofa
 
 		virtual ~FibonacciTask() { }
 
-		virtual bool run(simulation::WorkerThread*);
+		virtual simulation::Task::Memory run(simulation::WorkerThread*) override;
 
 	private:
 
@@ -40,7 +40,7 @@ namespace sofa
 
 		virtual ~IntSumTask() {}
 
-		virtual bool run(simulation::WorkerThread*);
+		virtual simulation::Task::Memory run(simulation::WorkerThread*) override;
 
 
 	private:

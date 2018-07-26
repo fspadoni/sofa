@@ -52,7 +52,7 @@ namespace sofa
             
             virtual ~StepTask();
             
-            virtual bool run(WorkerThread* );
+            virtual Task::Memory run(WorkerThread* );
             
             
         private:

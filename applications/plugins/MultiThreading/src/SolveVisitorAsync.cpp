@@ -53,7 +53,7 @@ namespace simulation
             //delete this;
         }
 
-		virtual bool run(simulation::WorkerThread*)
+		virtual Task::Memory run(simulation::WorkerThread*)
 		{
             //TASK_SCHEDULER_PROFILER(SolveVisitorAsyncTask);
 
@@ -66,7 +66,7 @@ namespace simulation
 
             auto end = std::chrono::high_resolution_clock::now();
             _millis = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-			return true;
+			return Task::Memory::Delete;
 		}
 
 	private:

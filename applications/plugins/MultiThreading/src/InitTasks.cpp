@@ -27,7 +27,7 @@ namespace simulation
 	{
 	}
 
-	bool InitPerThreadDataTask::run(WorkerThread* )
+    Task::Memory InitPerThreadDataTask::run(WorkerThread* )
 	{  
 
 		core::ExecParams::defaultInstance();
@@ -65,7 +65,7 @@ namespace simulation
 			// yield while waiting  
 			std::this_thread::yield();
 		}  
-		return false;
+		return None;
 	}  
 
 
@@ -78,7 +78,7 @@ namespace simulation
 	{
 	}
 
-	bool InitOGLcontextTask::run(sofa::simulation::WorkerThread*)
+    Task::Memory InitOGLcontextTask::run(sofa::simulation::WorkerThread*)
 	{
 		//glGlobalContext = wglCreateContext(_hdc);
 		//wglShareLists(_mainContext, glGlobalContext);
@@ -91,7 +91,7 @@ namespace simulation
 			// yield while waiting  
 			std::this_thread::yield();
 		}
-		return true;
+		return Delete;
 	}
 
 
@@ -103,7 +103,7 @@ namespace simulation
 	{
 	}
 
-	bool DeleteOGLcontextTask::run(sofa::simulation::WorkerThread*)
+    Task::Memory DeleteOGLcontextTask::run(sofa::simulation::WorkerThread*)
 	{
 		wglDeleteContext(glGlobalContext);
 
@@ -113,7 +113,7 @@ namespace simulation
 			// yield while waiting  
 			std::this_thread::yield();
 		}
-		return true;
+		return Delete;
 	}
 
 	// temp remove this function to use the global one

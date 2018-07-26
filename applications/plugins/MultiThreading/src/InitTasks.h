@@ -45,7 +45,7 @@ namespace simulation
 		
 		virtual ~InitPerThreadDataTask();
 
-		virtual bool run(WorkerThread* );
+		virtual Memory run(WorkerThread* ) override;
 
 	private:
 
@@ -62,7 +62,7 @@ namespace simulation
 
 		InitOGLcontextTask::~InitOGLcontextTask();
 
-		bool run(sofa::simulation::WorkerThread*);
+        virtual Memory run(sofa::simulation::WorkerThread*) override;
 
 	private:
 
@@ -80,7 +80,7 @@ namespace simulation
 
 		DeleteOGLcontextTask::~DeleteOGLcontextTask();
 
-		bool run(sofa::simulation::WorkerThread*);
+        virtual Memory run(sofa::simulation::WorkerThread*) override;
 
 	private:
 		std::mutex*	 IdFactorygetIDMutex;

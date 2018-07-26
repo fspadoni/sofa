@@ -86,18 +86,24 @@ namespace sofa
 
 			std::thread* create_and_attach( TaskScheduler* const& taskScheduler);
 
+            void runTask(Task* task);
+
 			// queue task if there is space (or do nothing)
-			bool pushTask(Task* pTask);
+			bool pushTask(Task* task);
 
 			// pop task from queue
-			bool popTask(Task** ppTask);
+			bool popTask(Task** task);
 			
 			// steal and queue some task from another thread 
 			bool stealTasks();
 
+            bool stealTasks(Task** task);
+
 			// give an idle thread some work
 			bool giveUpSomeWork(WorkerThread* pIdleThread);
 			
+            bool WorkerThread::giveUpSomeWork(Task** stolenTask);
+
 			void doWork(Task::Status* status);
 
 			// boost thread main loop
@@ -122,8 +128,6 @@ namespace sofa
             SpinLock _taskMutex;
             
             std::deque<Task*> _tasks;
-            
-			Task* _stolenTask;
 
             std::thread  _stdThread;
             

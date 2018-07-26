@@ -36,7 +36,7 @@ namespace sofa
 		{
 		}
 
-		bool ThreadSpecificTask::run(WorkerThread* )
+        Task::Memory ThreadSpecificTask::run(WorkerThread* )
 		{  
 
 			runThreadSpecific();
@@ -53,7 +53,7 @@ namespace sofa
 				// yield while waiting  
 				std::this_thread::yield();
 			}  
-			return false;
+			return Memory::None;
 		}  
 
 	

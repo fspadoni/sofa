@@ -176,7 +176,6 @@ namespace sofa
         : _tasks()
         , _index(index)
         , _name(name + std::to_string(index))
-		, _stolenTask(nullptr)
         , _taskScheduler(pScheduler)
         
 		{
@@ -277,30 +276,15 @@ namespace sofa
 
 		void WorkerThread::doWork(Task::Status* status)
 		{
-			do
+            for (;;)// do
 			{
 				Task*		task;
-				Task::Status*	pPrevStatus = nullptr;
 
 				while (popTask(&task))
 				{
 					// run
-					pPrevStatus = _currentStatus;
-					_currentStatus = task->getStatus();
-				
-                    {
-                        //TASK_SCHEDULER_PROFILER(RunTask);
-
-                        if (task->run(this))
-                        {
-                            // pooled memory: call destructor and free
-                            task->~Task();
-                            delete task;
-                        }
-                    }					
+                    runTask(task);						
 					
-					_currentStatus->markBusy(false);
-					_currentStatus = pPrevStatus;
 					
 					if ( status && !status->isBusy() )
 						return;
@@ -310,7 +294,13 @@ namespace sofa
 				if (_taskScheduler->_mainTaskStatus == nullptr)
 					return;
 
-			} while (stealTasks());	
+                if (!stealTasks(&task))
+                    return;
+                
+                // run stolen task
+                runTask(task);
+
+			} //;;while (stealTasks());	
 
 		
 			return;
@@ -331,6 +321,28 @@ namespace sofa
 			}
 		}
 
+        void WorkerThread::runTask(Task* task)
+        {
+            Task::Status* prevStatus = _currentStatus;
+            _currentStatus = task->getStatus();
+
+            {
+                Task::Memory ret = task->run(this);
+                if (ret == Task::Memory::Free)
+                {
+                    // pooled memory: call destructor and free
+                    task->~Task();
+                }
+                else if (ret == Task::Memory::Delete)
+                {
+                    // pooled memory: call destructor and free
+                    delete task;
+                }
+            }
+
+            _currentStatus->markBusy(false);
+            _currentStatus = prevStatus;
+        }
 
 		bool WorkerThread::popTask(Task** task)
 		{
@@ -378,13 +390,7 @@ namespace sofa
             // we are single thread: run the task
             {
                 //TASK_SCHEDULER_PROFILER(RunTask);
-
-                if (task->run(this))
-                {
-                    // pooled memory: call destructor and free
-                    task->~Task();
-                    delete task;
-                }
+                runTask(task);
             }            
             
 			return false;
@@ -411,6 +417,26 @@ namespace sofa
             return false;
 		}
 
+        bool WorkerThread::giveUpSomeWork(Task** stolenTask)
+        {
+            ScopedLock lock(_taskMutex);
+            //Task* stolenTask = nullptr;
+            if (!_tasks.empty())
+            {
+                *stolenTask = _tasks.front();
+                if (stolenTask)
+                {
+                    _tasks.pop_front();
+                    //idleThread->_tasks.push_back(stolenTask);
+                    //idleThread->_stolenTask = stolenTask;
+                    return true;
+                }
+                *stolenTask = nullptr;
+                return false;
+
+            }
+            return false;
+        }
 
 		bool WorkerThread::stealTasks()
 		{
@@ -435,7 +461,28 @@ namespace sofa
 			return false;
 		}
 
+        bool WorkerThread::stealTasks(Task** task)
+        {
+            {
+                //TASK_SCHEDULER_PROFILER(StealTask);
 
+                for (auto it : _taskScheduler->_threads)
+                {
+                    // if this is the main thread continue
+                    if (std::this_thread::get_id() == it.first)
+                    {
+                        continue;
+                    }
+
+                    if (it.second->giveUpSomeWork(task))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 		
 		// called once by each thread used
 		// by the TaskScheduler

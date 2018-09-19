@@ -53,7 +53,7 @@ namespace sofa
 
 		unsigned TaskSchedulerDefault::GetHardwareThreadsCount()
 		{
-			return std::thread::hardware_concurrency();
+			return std::thread::hardware_concurrency() / 2;
 		}
 
 
@@ -71,7 +71,7 @@ namespace sofa
         {
             if ( _isInitialized )
             {
-                if ( NbThread == _threadCount )
+                if ( (NbThread == _threadCount) || (NbThread==0 && _threadCount==GetHardwareThreadsCount()) )
                 {
                     return;
                 }
@@ -90,9 +90,9 @@ namespace sofa
             _mainTaskStatus	= nullptr;          
 
             // default number of thread: only physicsal cores. no advantage from hyperthreading.
-            _threadCount = GetHardwareThreadsCount() / 2;
+            _threadCount = GetHardwareThreadsCount();
             
-            if ( NbThread > 0 && NbThread <= MAX_THREADS  )
+            if ( NbThread > 0 )//&& NbThread <= MAX_THREADS  )
             {
                 _threadCount = NbThread;
             }

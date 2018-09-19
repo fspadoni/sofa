@@ -82,8 +82,8 @@ namespace simulation
 	}
 
 	AnimationLoopParallelScheduler::~AnimationLoopParallelScheduler()
-	{	
-		//TaskScheduler::getInstance().stop();
+	{
+        
 	}
 
 	void AnimationLoopParallelScheduler::init()
@@ -172,22 +172,6 @@ namespace simulation
 		//task_pool.purge_memory();
 	}
 
-
-	void AnimationLoopParallelScheduler::initThreadLocalData()
-	{
-        std::atomic<int> atomicCounter( TaskScheduler::getInstance()->getThreadCount() );
-
-        std::mutex  InitPerThreadMutex;
-        
-        Task::Status status;
-        const int nbThread = _taskScheduler->getThreadCount();
-        
-        for (int i=0; i<nbThread; ++i)
-        {
-            _taskScheduler->addTask( new InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
-        } 
-        _taskScheduler->workUntilDone(&status);
-	}
 
 } // namespace simulation
 

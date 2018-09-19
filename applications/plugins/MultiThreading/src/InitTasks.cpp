@@ -59,7 +59,6 @@ namespace sofa
         {
             std::atomic<int> atomicCounter;
             TaskScheduler* scheduler = TaskScheduler::getInstance();
-            
             atomicCounter = scheduler->getThreadCount();
             
             std::mutex  InitThreadSpecificMutex;

@@ -262,6 +262,10 @@ public:
 
     //virtual const helper::vector <PointID>& getPointsOnBorder();
 
+    /** \brief Returns the EdgesAroundVertex array (i.e. provide the 3 edge indices for each triangle). */
+    const helper::vector< EdgesAroundVertex > &getEdgesAroundVertexArray();
+  
+
     /** \brief Returns the EdgesInTriangle array (i.e. provide the 3 edge indices for each triangle). */
     const helper::vector< EdgesInTriangle > &getEdgesInTriangleArray();
 

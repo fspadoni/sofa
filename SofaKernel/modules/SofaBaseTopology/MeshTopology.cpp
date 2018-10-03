@@ -1603,6 +1603,19 @@ const MeshTopology::HexahedraAroundQuad& MeshTopology::getHexahedraAroundQuad(Qu
 
 
 
+const helper::vector< MeshTopology::EdgesAroundVertex >& MeshTopology::getEdgesAroundVertexArray()
+{
+    if (m_edgesAroundVertex.empty()) // this method should only be called when the array exists.
+    {
+#ifndef NDEBUG
+        sout << "Warning. [MeshTopology::getEdgesInTriangleArray] EdgesInTriangle array is empty." << sendl;
+#endif
+
+        createEdgesAroundVertexArray();
+    }
+
+    return m_edgesAroundVertex;
+}
 
 const vector< MeshTopology::EdgesInTriangle >& MeshTopology::getEdgesInTriangleArray()
 {

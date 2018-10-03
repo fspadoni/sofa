@@ -1263,6 +1263,16 @@ void MechanicalObject<DataTypes>::init()
         vfree.setPersistent(false);
         x0.setPersistent(false);
         reset_position.setPersistent(false);}
+
+    // initalize xfree=x and vfree=v if not set
+    if (!xfree.isSet())
+    {
+        vOp(core::ExecParams::defaultInstance(), core::VecId::freePosition(), core::VecId::position());
+    }
+    if (!vfree.isSet())
+    {
+        vOp(core::ExecParams::defaultInstance(), core::VecId::freeVelocity(), core::VecId::velocity());
+    }
 }
 
 template <class DataTypes>

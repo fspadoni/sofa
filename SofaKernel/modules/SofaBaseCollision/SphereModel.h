@@ -207,13 +207,19 @@ inline TSphere<DataTypes>::TSphere(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::center() const { return DataTypes::getCPos(this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->index]); }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::center() const {
+    return DataTypes::getCPos(this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]);
+}
 
 template<class DataTypes>
-inline const typename DataTypes::Coord & TSphere<DataTypes>::rigidCenter() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->index];}
+inline const typename DataTypes::Coord & TSphere<DataTypes>::rigidCenter() const {
+    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index];
+}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const { return DataTypes::getCPos(this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->index]);}
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const {
+    return DataTypes::getCPos(this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]);
+}
 
 template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }

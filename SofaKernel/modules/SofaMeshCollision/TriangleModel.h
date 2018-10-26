@@ -263,18 +263,20 @@ inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index, helper::Re
 {}
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(this->model->triangles))[this->index][0]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const {
+    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][0]];
+}
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(this->model->triangles))[this->index][1]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][1]]; }
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(this->model->triangles))[this->index][2]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][2]]; }
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::p(int i) const {
-    return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(this->model->triangles))[this->index][i]];
+    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][i]];
 }
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::operator[](int i) const {
-    return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(this->model->triangles))[this->index][i]];
+    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(this->model->triangles))[this->index][i]];
 }
 
 template<class DataTypes>

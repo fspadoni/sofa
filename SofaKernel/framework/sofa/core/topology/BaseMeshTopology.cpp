@@ -370,14 +370,14 @@ std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endChange() 
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginStateChange() const
 {
-    serr<<"beginStateChange() not supported." << sendl;
+    //serr<<"beginStateChange() not supported." << sendl;
     std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChange() const
 {
-    serr<<"endStateChange() not supported." << sendl;
+    //serr<<"endStateChange() not supported." << sendl;
     std::list<const TopologyChange *>::const_iterator l;
     return l;
 }

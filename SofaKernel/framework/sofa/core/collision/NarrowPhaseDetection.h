@@ -136,6 +136,7 @@ protected:
 private:
     std::map<Instance, DetectionOutputMap> m_storedOutputsMap;
 
+protected:
     DetectionOutputMap m_outputsMap;
 };
 

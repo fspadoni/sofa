@@ -1,7 +1,7 @@
 #include "TaskSchedulerTestTasks.h"
 
-#include <MultiThreading/src/TaskScheduler.h>
-#include <MultiThreading/src/DefaultTaskScheduler.h>
+#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/DefaultTaskScheduler.h>
 #include <sofa/helper/testing/BaseTest.h>
 
 namespace sofa
@@ -10,7 +10,7 @@ namespace sofa
 	// compute the Fibonacci number for input N
 	static int64_t Fibonacci(int64_t N, int nbThread = 0)
 	{
-        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::TaskSchedulerDefault::name());
+        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::DefaultTaskScheduler::name());
         scheduler->init(nbThread);
 
         simulation::Task::Status status;
@@ -28,7 +28,7 @@ namespace sofa
 	// compute the sum of integers from 1 to N
 	static int64_t IntSum1ToN(const int64_t N, int nbThread = 0)
 	{
-        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::TaskSchedulerDefault::name());
+        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::DefaultTaskScheduler::name());
         scheduler->init(nbThread);
 
         simulation::Task::Status status;

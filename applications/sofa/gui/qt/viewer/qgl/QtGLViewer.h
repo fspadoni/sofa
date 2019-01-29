@@ -98,6 +98,7 @@ private:
 
     bool _waitForRender;
 
+    QFont displayFont;
 
 public:
 

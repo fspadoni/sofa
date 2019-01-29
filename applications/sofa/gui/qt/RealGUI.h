@@ -217,6 +217,7 @@ private:
     DocBrowser*              m_docbrowser {nullptr};
     bool animationState;
     int frameCounter;
+    double fps;
     unsigned int m_viewerMSAANbSampling;
 //-----------------DATAS MEMBER------------------------}
 

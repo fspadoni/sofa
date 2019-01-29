@@ -1523,7 +1523,7 @@ void RealGUI::eventNewStep()
     {
         ctime_t curtime = CTime::getRefTime();
         int i = ( ( frameCounter/10 ) %10 );
-        double fps = ( ( double ) timeTicks / ( curtime - beginTime[i] ) ) * ( frameCounter<100?frameCounter:100 );
+        fps = ( ( double ) timeTicks / ( curtime - beginTime[i] ) ) * ( frameCounter<100?frameCounter:100 );
         showFPS(fps);
 
         beginTime[i] = curtime;

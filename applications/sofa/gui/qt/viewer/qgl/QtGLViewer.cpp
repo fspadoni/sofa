@@ -315,6 +315,8 @@ void QtGLViewer::init(void)
 
     // Zoom: right click + double middle click
     setMouseBinding(Qt::NoModifier, Qt::MiddleButton, ZOOM_ON_PIXEL, true, Qt::RightButton);
+
+    displayFont.setPointSize(48);
 }
 
 // ---------------------------------------------------------
@@ -786,6 +788,18 @@ void QtGLViewer::drawScene(void)
         DisplayMenu();		// always needs to be the last object being drawn
     }
 
+    // display fps
+    float current_fps = currentFPS();
+    if (_video)
+    {
+        current_fps *= 1.25;
+    }
+    QString fpsString = tr("%3Hz", "Frames per seconds, in Hertz")
+        .arg(current_fps, 0, 'f', ((current_fps < 10.0) ? 1 : 0));
+
+    //drawText(10, 
+    //    int(1.75 * (displayFont.pixelSize() > 0) ? displayFont.pixelSize() : displayFont.pointSize() ),
+    //    fpsString, displayFont );
 }
 
 void QtGLViewer::viewAll()

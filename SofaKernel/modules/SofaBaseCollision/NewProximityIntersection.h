@@ -46,9 +46,11 @@ public:
 
     typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
 
+    typedef sofa::core::collision::DetectionOutput DetectionOutput;
+
     virtual void init() override;
 
-    static inline int doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id);
+    static inline int doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, DetectionOutput& detection, int id);
 
 };
 

@@ -875,7 +875,7 @@ public:
     {
         for (Index i=0; i < (Index)colsValue.size(); ++i)
             traits::clear(colsValue[i]);
-        compressed = colsValue.empty();
+
         btemp.clear();
     }
 
